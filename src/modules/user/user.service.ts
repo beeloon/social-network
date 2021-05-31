@@ -1,27 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-
 import { CreateUserDto } from './dto/create-user-dto';
-import { User, UserDocument } from './schemas/user.schema';
+import { Injectable, Inject } from '@nestjs/common';
+import { Users } from '../../db/entities/Users/user';
 
 @Injectable()
-export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+export class UsersService {
+  constructor(
+    @Inject('USERS_REPOSITORY')
+    private usersRepository: typeof Users,
+  ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const saltOrRounds = 10;
-    const password = createUserDto.password;
-    const hash = await bcrypt.hash(password, saltOrRounds);
-
-    createUserDto.password = hash;
-    const createdUser = new this.userModel(createUserDto);
-
-    return createdUser.save();
+  async create(createUser: CreateUserDto): Promise<Users> {
+    return this.usersRepository.create<Users>(createUser);
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(): Promise<Users[]> {
+    return this.usersRepository.findAll<Users>();
+  }
+
+  async findById(id: string): Promise<Users> {
+    return this.usersRepository.findOne({ where: { id } });
+  }
+
+  async findByEmail(email: string): Promise<Users> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async delete(id: string): Promise<number> {
+    return this.usersRepository.destroy({ where: { id } });
   }
 }

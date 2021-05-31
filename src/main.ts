@@ -11,6 +11,7 @@ async function bootstrap() {
 
   await app.listen(PORT);
   console.log(PORT);
+  console.log(app);
 }
 
 bootstrap();

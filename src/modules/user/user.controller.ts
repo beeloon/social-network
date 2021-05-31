@@ -14,8 +14,7 @@ import { UpdateUserDto } from './dto/update-user-dto';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -41,7 +40,6 @@ export class UserController {
   delete(@Param('id') id: string): Promise<number> {
     return this.userService.delete(id);
   }
-
   @Patch(':id')
   update(
     @Param('id') id: string,

@@ -1,20 +1,18 @@
-import { Sequelize } from 'sequelize-typescript';
+import { createConnection } from 'typeorm';
 import { User } from './entities/Users/user';
-export const databaseProviders = [
+
+export const SQLDatabaseProviders = [
   {
-    provide: 'SEQUELIZE',
-    useFactory: async () => {
-      const sequelize = new Sequelize({
-        dialect: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-      });
-      sequelize.addModels([User]);
-      await sequelize.sync();
-      return sequelize;
-    },
+    provide: 'SQL_DATABASE_CONNECTION',
+    useFactory: async () =>
+      await createConnection({
+        type: 'mysql',
+        host: process.env.SQL_DB_HOST,
+        port: +process.env.SQL_DB_PORT,
+        username: process.env.SQL_DB_USERNAME,
+        password: process.env.SQL_DB_PASSWORD,
+        database: process.env.SQL_DB_DATABASE,
+        entities: [User],
+      }),
   },
 ];

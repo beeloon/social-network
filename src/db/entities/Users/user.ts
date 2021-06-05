@@ -1,32 +1,44 @@
-import {
-  BeforeCreate,
-  Column,
-  Model,
-  PrimaryKey,
-  Table,
-  Default,
-} from 'sequelize-typescript';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  UpdateDateColumn,
+  CreateDateColumn,
+  Unique,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { CreateUserDto } from '../../../modules/user/dto/create-user-dto';
 
-@Table
-export class User extends Model {
-  @Default(uuidv4())
-  @PrimaryKey
-  @Column
+@Unique(['id'])
+@Unique(['email'])
+@Entity()
+export class User {
+  constructor(userDto: CreateUserDto) {
+    Object.assign(this, userDto);
+  }
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column
+  @Column()
   name: string;
 
-  @Column
+  @Column()
   email: string;
 
-  @Column
+  @Column()
   password: string;
 
-  @BeforeCreate
-  static async hashPasswordBeforeUpdate(user: User) {
-    user.password = await bcrypt.hash(user.password, 10);
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', update: false })
+  updatedAt: Date;
+
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
+  createdAt: Date;
+
+  @BeforeInsert()
+  async beforeInsertActions() {
+    this.id = uuidv4();
+    this.password = await bcrypt.hash(this.password, 10);
   }
 }

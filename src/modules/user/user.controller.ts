@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { User } from '../../db/entities/Users/user';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Controller('users')
 export class UserController {
@@ -37,14 +38,14 @@ export class UserController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<number> {
+  delete(@Param('id') id: string): Promise<DeleteResult> {
     return this.userService.delete(id);
   }
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<[number, User[]]> {
+  ): Promise<UpdateResult> {
     return this.userService.update(id, updateUserDto);
   }
 }

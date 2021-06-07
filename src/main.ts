@@ -9,7 +9,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(PORT);
+  await app.listen(PORT, () => {
+    console.log(`Server has been started on port: ${PORT}`);
+  });
 }
 
 bootstrap();

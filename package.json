@@ -27,9 +27,11 @@
     "@nestjs/mongoose": "^7.2.4",
     "@nestjs/platform-express": "^7.6.15",
     "@nestjs/sequelize": "^0.2.0",
+    "@nestjs/typeorm": "^7.1.5",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "dotenv": "^10.0.0",
     "mongodb": "^3.6.8",
     "mongoose": "^5.12.12",
     "mysql2": "^2.2.5",
@@ -38,6 +40,7 @@
     "rxjs": "^6.6.6",
     "sequelize": "^6.6.2",
     "sequelize-typescript": "^2.1.0",
+    "typeorm": "^0.2.34",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

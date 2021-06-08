@@ -1,32 +1,40 @@
 import {
-  BeforeCreate,
+  Entity,
   Column,
-  Model,
-  PrimaryKey,
-  Table,
-  Default,
-} from 'sequelize-typescript';
+  BeforeInsert,
+  UpdateDateColumn,
+  CreateDateColumn,
+  Unique,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-@Table
-export class User extends Model {
-  @Default(uuidv4())
-  @PrimaryKey
-  @Column
+@Unique(['id'])
+@Unique(['email'])
+@Entity({ name: 'users' }) // Name of your table in database
+export class User {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column
-  name: string;
+  @Column()
+  username: string;
 
-  @Column
+  @Column()
   email: string;
 
-  @Column
+  @Column()
   password: string;
 
-  @BeforeCreate
-  static async hashPasswordBeforeUpdate(user: User) {
-    user.password = await bcrypt.hash(user.password, 10);
+  // @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', update: false })
+  // updatedAt: Date;
+
+  // @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
+  // createdAt: Date;
+
+  @BeforeInsert()
+  async beforeInsertActions() {
+    this.id = uuidv4();
+    this.password = await bcrypt.hash(this.password, 10);
   }
 }

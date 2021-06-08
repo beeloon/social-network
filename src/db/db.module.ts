@@ -1,8 +1,13 @@
-import { Module } from '@nestjs/common';
-import { databaseProviders } from './db.providers';
+// Вариат Димы.
+// Удалил, потому что была ошибка, пофиксил по доке Неста,
+// Смотри в app.module.ts
+//
 
-@Module({
-  providers: [...databaseProviders],
-  exports: [...databaseProviders],
-})
-export class SequelizeDBModule {}
+// import { Module } from '@nestjs/common';
+// import { SQLDatabaseProviders } from './db.providers';
+
+// @Module({
+//   providers: [...SQLDatabaseProviders],
+//   exports: [...SQLDatabaseProviders],
+// })
+// export class SQLDatabaseModule {}

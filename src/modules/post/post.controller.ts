@@ -7,7 +7,7 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { IPost } from './post.model';
+import { IPost } from '../../db/entities/Post/post.schema';
 
 import { PostService } from './post.service';
 

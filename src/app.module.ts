@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { UserModule } from './modules/user/user.module';
@@ -11,6 +11,8 @@ import { FollowerModule } from './modules/follower/follower.module';
 import commonOptions from './config';
 import sqlOptions from './config/sql.config';
 import mongoOptions from './config/mongo.config';
+
+import { RefreshToken } from './modules/auth/entities/reftesh-token.entity';
 
 @Module({
   imports: [
@@ -25,11 +27,12 @@ import mongoOptions from './config/mongo.config';
       }),
       inject: [ConfigService],
     }),
-    SequelizeModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         ...configService.get('sql.connectionOptions'),
-        models: [],
+        entities: [RefreshToken],
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),

@@ -1,10 +1,19 @@
 import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from '../Users/user';
+import { Entity } from 'typeorm';
 
-export const PostSchema = new mongoose.Schema({
-  title: { type: String, requiered: true },
-  text: { type: String, required: true },
-  onwerId: { type: String, required: true },
-});
+@Schema()
+export class Post {
+  @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
+  text: string;
+
+  @Prop({ type: Entity, ref: 'ownerId' })
+  ownerId: User;
+}
 
 export interface IPost extends mongoose.Document {
   id: string;

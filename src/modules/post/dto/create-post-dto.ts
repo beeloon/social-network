@@ -8,4 +8,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   @Length(2, 255)
   text: string;
+
+  @IsNotEmpty()
+  ownerId: string;
 }

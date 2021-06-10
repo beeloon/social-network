@@ -9,6 +9,9 @@ export class RefreshToken {
   value: string;
 
   @Column()
+  hash: string;
+
+  @Column()
   user_id: number;
 
   @Column()

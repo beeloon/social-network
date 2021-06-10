@@ -1,5 +1,5 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { UserService } from '../user/user.service';
 import { RefreshTokenService } from './refresh-token.service';
@@ -11,6 +11,19 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService,
     private jwtService: JwtService,
   ) {}
+
+  async issueTokenPair(user) {
+    const payload = { username: user.name, id: user.id };
+
+    const token = this.jwtService.sign(payload);
+    const refreshToken = await this.refreshTokenService.generate(payload.id);
+
+    return {
+      token,
+      refreshToken,
+      tokenType: 'Bearer',
+    };
+  }
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.userService.findOne(email);
@@ -25,20 +38,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.name, uid: user.id };
+    const tokenPair = await this.issueTokenPair(user);
 
-    const token = this.jwtService.sign(payload);
-    const refreshToken = await this.refreshTokenService.create(user.id, 30);
-
-    return {
-      token,
-      refreshToken,
-      token_type: 'Bearer',
-    };
-  }
-
-  async signup(user) {
-    // TODO: CREATE USER WITH USER.SERVICE
+    return tokenPair;
   }
 
   async logout(userId) {
@@ -53,7 +55,21 @@ export class AuthService {
     return HttpStatus.NO_CONTENT;
   }
 
-  async refresh(token: string) {
-    return this.refreshTokenService.verify(token);
+  async refresh(user, token: string) {
+    const isTokenExist = await this.refreshTokenService.verify(user.id, token);
+
+    if (!isTokenExist) {
+      return new UnauthorizedException('Invalid RefreshToken');
+    }
+
+    await this.refreshTokenService.delete(user.id);
+
+    const tokenPair = await this.issueTokenPair(user);
+
+    return tokenPair;
+  }
+
+  async signup(user) {
+    // TODO: CREATE USER WITH USER.SERVICE
   }
 }

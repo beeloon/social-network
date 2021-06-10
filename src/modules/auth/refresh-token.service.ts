@@ -2,37 +2,33 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 import { RefreshToken } from './entities/reftesh-token.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RefreshTokenService {
   constructor(
     @InjectRepository(RefreshToken)
     private refreshTokenRepository: Repository<RefreshToken>,
+    private configService: ConfigService,
   ) {}
 
-  async create(userId, ttl: number): Promise<string> {
-    const existedToken = await this.refreshTokenRepository.findOne({
-      user_id: userId,
-    });
+  async create(userId): Promise<RefreshToken> {
+    const refreshToken = new RefreshToken();
 
-    if (existedToken && this.isNotExpired(existedToken.expires)) {
-      return existedToken.value;
-    }
+    refreshToken.value = uuid();
+    refreshToken.hash = await bcrypt.hash(refreshToken.value, 10);
+    refreshToken.user_id = userId;
+    refreshToken.expires = new Date();
+    refreshToken.expires.setDate(
+      refreshToken.expires.getDate() + this.configService.get('refresh.ttl'),
+    );
 
-    const refreshToken = uuid();
-    const expires = new Date();
+    const savedToken = await this.refreshTokenRepository.save(refreshToken);
 
-    expires.setDate(expires.getDate() + ttl);
-
-    await this.save(refreshToken, userId, expires);
-
-    return refreshToken;
-  }
-
-  isNotExpired(expires: Date): boolean {
-    return expires > new Date();
+    return savedToken;
   }
 
   async delete(userId) {
@@ -41,22 +37,35 @@ export class RefreshTokenService {
     return token;
   }
 
-  async save(token, userId, expires) {
-    const savedToken = await this.refreshTokenRepository.save({
-      value: token,
+  async generate(userId): Promise<string> {
+    const existedToken = await this.refreshTokenRepository.findOne({
       user_id: userId,
-      expires,
     });
 
-    return savedToken;
+    if (existedToken && this.isNotExpired(existedToken.expires)) {
+      return existedToken.value;
+    }
+
+    const newToken = await this.create(userId);
+
+    return newToken.value;
   }
 
-  async verify(token: string) {
+  isNotExpired(expires: Date): boolean {
+    return expires > new Date();
+  }
+
+  async verify(userId, token: string): Promise<boolean> {
     const dbToken = await this.refreshTokenRepository.findOne({
-      value: token,
+      user_id: userId,
     });
 
-    // TODO: MAKE VALID TOKEN VERIFICATION
-    return dbToken;
+    if (dbToken == null) {
+      return false;
+    }
+
+    const isTokensEqual = await bcrypt.compare(token, dbToken.hash);
+
+    return isTokensEqual;
   }
 }

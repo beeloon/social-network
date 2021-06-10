@@ -4,4 +4,7 @@ export default () => ({
     secret: process.env.JWT_ACCESS_TOKEN_SECRET,
     expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
   },
+  refresh: {
+    ttl: parseInt(process.env.REFRESH_TOKEN_TTL, 10),
+  },
 });

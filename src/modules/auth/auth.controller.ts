@@ -19,12 +19,12 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Req() req) {
+  login(@Req() req) {
     return this.authService.login(req.user);
   }
 
   @Post('auth/signup')
-  async signup(@Body() createUserDto) {
+  signup(@Body() createUserDto) {
     return this.authService.signup(createUserDto);
   }
 
@@ -36,8 +36,8 @@ export class AuthController {
 
   @UseGuards(JWTAuthGuard)
   @Post('auth/refresh')
-  refreshToken(@Body() body) {
-    return this.authService.refresh(body.refreshToken);
+  refresh(@Req() req) {
+    return this.authService.refresh(req.body.refreshToken);
   }
 
   @UseGuards(JWTAuthGuard)

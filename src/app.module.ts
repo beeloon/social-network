@@ -6,10 +6,13 @@ import { PostModule } from './modules/post/post.module';
 import { FollowerModule } from './modules/follower/follower.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './db/entities/Users/user';
+import { Followers } from './db/entities/Followers/followers';
 
 @Module({
   imports: [
-    //MongooseModule.forRoot(process.env.MONGO_DB_URI, { useCreateIndex: true }),
+    MongooseModule.forRoot('mongodb://localhost:27017/social-network', {
+      useCreateIndex: true,
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
         type: 'mysql',
@@ -18,7 +21,10 @@ import { User } from './db/entities/Users/user';
         username: process.env.SQL_DB_USERNAME,
         password: process.env.SQL_DB_PASSWORD,
         database: process.env.SQL_DB_DATABASE,
-        entities: [User],
+        entities: [User, Followers],
+        synchronize: true,
+        logging: ['query', 'error'],
+        logger: 'file',
       }),
     }),
     UserModule,

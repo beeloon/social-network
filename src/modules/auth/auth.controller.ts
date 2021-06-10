@@ -39,4 +39,10 @@ export class AuthController {
   refreshToken(@Body() body) {
     return this.authService.refresh(body.refreshToken);
   }
+
+  @UseGuards(JWTAuthGuard)
+  @Delete('auth/logout')
+  logout(@Req() req) {
+    return this.authService.logout(req.user.uid);
+  }
 }

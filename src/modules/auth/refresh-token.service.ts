@@ -21,19 +21,24 @@ export class RefreshTokenService {
     });
   }
 
-  async issueRefreshToken(userId) {
+  async find(userId) {
+    return await this.refreshTokenRepository.find({ user_id: userId });
+  }
+
+  async create(userId: string, ttl: number) {
+    // CHECK IS TOKEN ALREADY EXIST => RETURN THIS TOKEN
     const refreshToken = uuid();
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 15);
-    const expires = new Date();
 
-    expires.setDate(expires.getDate() + 30);
+    const expires = new Date();
+    expires.setDate(expires.getDate() + ttl);
 
     await this.saveTokenToDB(hashedRefreshToken, userId, expires);
 
     return refreshToken;
   }
 
-  async verifyRefreshToken(token: string) {
+  async verify(token: string) {
     const hashedToken = await bcrypt.hash(token, 15);
     const dbToken = await this.refreshTokenRepository.findOne({
       where: { value: hashedToken },
@@ -41,5 +46,11 @@ export class RefreshTokenService {
 
     // TODO: MAKE VALID TOKEN VERIFICATION
     return dbToken;
+  }
+
+  async delete(userId) {
+    const token = await this.refreshTokenRepository.delete({ user_id: userId });
+
+    return token;
   }
 }

@@ -13,7 +13,8 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 import { UserModule } from '../user/user.module';
-import { RefreshToken } from './entities/reftesh-token.entity';
+
+import { RefreshToken } from '../../entities';
 
 @Module({
   imports: [

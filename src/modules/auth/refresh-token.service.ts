@@ -4,8 +4,7 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-import { RefreshToken } from './entities/reftesh-token.entity';
-import { ConfigService } from '@nestjs/config';
+import { RefreshToken } from '../../entities';
 
 @Injectable()
 export class RefreshTokenService {

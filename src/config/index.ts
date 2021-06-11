@@ -9,6 +9,7 @@ interface Configuration {
   };
   mongo: {
     connectionOptions: {
+      type: string;
       uri: string;
     };
   };
@@ -41,6 +42,7 @@ const configuration = (): Configuration => ({
   },
   mongo: {
     connectionOptions: {
+      type: ENV.MONGO_TYPE,
       uri: ENV.MONGO_DB_URI,
     },
   },

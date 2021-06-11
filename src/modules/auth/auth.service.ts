@@ -69,7 +69,7 @@ export class AuthService {
     return tokenPair;
   }
 
-  async signup(user) {
+  async signup(userDto) {
     // TODO: CREATE USER WITH USER.SERVICE
   }
 }

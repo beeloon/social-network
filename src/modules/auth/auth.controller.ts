@@ -13,6 +13,8 @@ import { JWTAuthGuard } from './guards/jwt-auth.guard';
 
 import { AuthService } from './auth.service';
 
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+
 @Controller()
 export class AuthController {
   constructor(public authService: AuthService) {}
@@ -36,8 +38,8 @@ export class AuthController {
 
   @UseGuards(JWTAuthGuard)
   @Post('auth/refresh')
-  refresh(@Req() req) {
-    return this.authService.refresh(req.user, req.body.refreshToken);
+  refresh(@Req() req, @Body() body: RefreshTokenDto) {
+    return this.authService.refresh(req.user, body.refreshToken);
   }
 
   @UseGuards(JWTAuthGuard)

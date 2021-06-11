@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -14,11 +13,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 import { UserModule } from '../user/user.module';
 
-import { RefreshToken } from '../../entities';
+import { DatabaseModule } from 'src/database/database.module';
+import { refreshTokenProviders } from 'src/database/providers';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RefreshToken]),
+    DatabaseModule,
     UserModule,
     PassportModule,
     JwtModule.registerAsync({
@@ -39,7 +39,8 @@ import { RefreshToken } from '../../entities';
     LocalStrategy,
     ConfigService,
     RefreshTokenService,
+    ...refreshTokenProviders,
   ],
-  exports: [TypeOrmModule, AuthService, JwtModule],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

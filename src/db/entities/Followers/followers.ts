@@ -3,14 +3,15 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from '../Users/user';
-import { CreateFollowerDto } from '../../../modules/follower/dto/create-follower-dto';
 
 @Entity()
 export class Followers {
-  constructor(followerDto?: CreateFollowerDto) {
-    Object.assign(this, followerDto);
+  constructor(followerUser: User, targetUser: User) {
+    this.followerId = followerUser;
+    this.targetId = targetUser;
   }
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,8 +28,10 @@ export class Followers {
   status: string;
 
   @ManyToOne(() => User)
-  follower: User;
+  @JoinColumn({ name: 'followerId' })
+  followerId: User;
 
   @ManyToOne(() => User)
-  target: User;
+  @JoinColumn({ name: 'targetId' })
+  targetId: User;
 }

@@ -7,49 +7,53 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { IPost } from '../../db/entities/Post/post.schema';
 
+import { PostSchema } from '../../database/entities/postSchema-entity';
+import { CreatePostDto } from './dto/create-post-dto';
+import { UpdatePostDto } from './dto/update-post-dto';
 import { PostService } from './post.service';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
   async addPost(
-    //@Body('id') id: string,
-    @Body('title') title: string,
-    @Body('text') text: string,
-  ): Promise<IPost> {
-    const result = this.postService.insertPost(title, text);
+    @Body()
+    postDto: CreatePostDto,
+  ): Promise<PostSchema> {
+    const result = await this.postService.createPost(postDto);
     return result;
   }
 
   @Get()
-  async getAllPosts(): Promise<IPost[]> {
+  async getAllPosts(): Promise<PostSchema[]> {
     const posts = await this.postService.getAllPosts();
     return posts;
-    //  const posts = await this.PostService.getAllPosts()
-    // return posts;
   }
 
   @Get(':id')
-  async getSinglePost(@Param('id') postId: string): Promise<IPost> {
+  async getSinglePost(@Param('id') postId: string): Promise<PostSchema> {
     return this.postService.getSinglePost(postId);
   }
 
   @Patch(':id')
-  async updateProduct(
+  async updatePostById(
     @Param('id') id: string,
-    @Body('title') title: string,
-    @Body('text') text: string,
-  ): Promise<IPost> {
-    const updatedPost = await this.postService.updateProduct(id, title, text);
+    @Body() updatePostDto: UpdatePostDto,
+  ): Promise<UpdateResult> {
+    const updatedPost = await this.postService.updatePost(id, updatePostDto);
     return updatedPost;
   }
 
   @Delete(':id')
-  async removeProduct(@Param('id') prodId: string): Promise<void> {
-    await this.postService.deleteProduct(prodId);
+  async removePost(@Param('id') prodId: string): Promise<DeleteResult> {
+    return await this.postService.deletePost(prodId);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<DeleteResult> {
+    return await this.postService.deletePost(id);
   }
 }

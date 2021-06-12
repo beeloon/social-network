@@ -1,41 +1,43 @@
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { Injectable } from '@nestjs/common';
-import { User } from '../../db/entities/Users/user';
+import { Injectable, Inject } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
+import { User } from 'src/database/entities/user-entity';
+import { USER_REPOSITORY } from 'src/database/database.constants';
 @Injectable()
 export class UserService {
   //
   constructor(
-    @InjectRepository(User)
+    @Inject(USER_REPOSITORY)
     private userRepository: Repository<User>,
   ) {}
 
-  async create(createUser: CreateUserDto): Promise<User> {
-    return this.userRepository.save(createUser).catch((error) => error.message);
+  public async create(createUser: CreateUserDto): Promise<User> {
+    return await this.userRepository
+      .save(createUser)
+      .catch((error) => error.message);
   }
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
-  }
-
-  async findById(id: string): Promise<User> {
-    return this.userRepository.findOne({ where: { id } });
+  public async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
-  async findByEmail(email: string): Promise<User> {
-    return this.userRepository.findOne({ where: { email } });
+  public async findById(id: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
-  async delete(id: string): Promise<DeleteResult> {
-    return this.userRepository.delete(id);
+  public async findByEmail(email: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { email } });
   }
 
-  async update(
+  public async delete(id: string): Promise<DeleteResult> {
+    return await this.userRepository.delete(id);
+  }
+
+  public async update(
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
-    return this.userRepository.update(id, updateUserDto);
+    return await this.userRepository.update(id, updateUserDto);
   }
 }

@@ -8,7 +8,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user-dto';
-import { User } from '../../db/entities/Users/user';
+import { User } from '../../database/entities/user-entity';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { DeleteResult, UpdateResult } from 'typeorm';

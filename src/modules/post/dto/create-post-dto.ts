@@ -9,6 +9,6 @@ export class CreatePostDto {
   @Length(2, 255)
   text: string;
 
-  @IsNotEmpty()
+  // @IsNotEmpty()
   ownerId: string;
 }

@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Unique(['email'])
 @Entity({ name: 'users' }) // Name of your table in database
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn() //Mysql doesnt have uuid
   id: string;
 
   @Column()
@@ -26,11 +26,11 @@ export class User {
   @Column()
   password: string;
 
-  // @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', update: false })
-  // updatedAt: Date;
+  //  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', update: false })
+  //  updatedAt: Date;
 
-  // @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
-  // createdAt: Date;
+  //  @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
+  //  createdAt: Date;
 
   @BeforeInsert()
   async beforeInsertActions() {

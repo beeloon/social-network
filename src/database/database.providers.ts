@@ -27,18 +27,4 @@ export const databaseProviders = [
         synchronize: true,
       }),
   },
-
-  // {
-  //   provide: MONGO_CONNECTION_TOKEN,
-  //   inject: [ConfigService],
-  //   useFactory: async (configService: ConfigService) =>
-  //     await createConnection({
-  //       type: 'mongodb',
-  //       url: configService.get('mongo.connectionOptions.uri'),
-  //       useUnifiedTopology: true,
-  //       useNewUrlParser: true,
-  //       synchronize: true,
-  //       entities: [PostSchema],
-  //     }),
-  // },
 ];

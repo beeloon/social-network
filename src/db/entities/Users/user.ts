@@ -8,8 +8,10 @@ import {
   CreateDateColumn,
   Unique,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { CreateUserDto } from '../../../modules/user/dto/create-user-dto';
+import { Followers } from '../Followers/followers';
 
 @Unique(['id'])
 @Unique(['email'])
@@ -35,6 +37,12 @@ export class User {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
   createdAt: Date;
+
+  @OneToMany(() => Followers, (followers) => followers.followerId)
+  followerId: Followers[];
+
+  @OneToMany(() => Followers, (followers) => followers.targetId)
+  targetId: Followers[];
 
   @BeforeInsert()
   async beforeInsertActions() {

@@ -19,7 +19,7 @@ export class User {
   constructor(createDto: CreateUserDto){
     Object.assign(this, createDto);
   }
-  @PrimaryGeneratedColumn('uuid') //Mysql doesnt have uuid
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()

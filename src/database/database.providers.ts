@@ -4,6 +4,8 @@ import { createConnection } from 'typeorm';
 import { MONGO_CONNECTION, SQL_CONNECTION } from './database.constants';
 
 import { RefreshToken } from './entities';
+import { Followers } from './entities/followers';
+import { User } from './entities/user';
 
 export const databaseProviders = [
   {
@@ -17,7 +19,7 @@ export const databaseProviders = [
         username: configService.get('sql.connectionOptions.username'),
         password: configService.get('sql.connectionOptions.password'),
         database: configService.get('sql.connectionOptions.database'),
-        entities: [RefreshToken],
+        entities: [RefreshToken, User, Followers],
         synchronize: true,
       }),
   },

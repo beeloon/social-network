@@ -72,6 +72,9 @@ export class FollowerService {
     if (!followersPair) {
       return 'No such followers pair';
     }
+    if (followersPair.status === 'Declined') {
+      return "You're not following this person";
+    }
     await this.followersRepository
       .delete(followersPair.id)
       .catch((e) => e.message);

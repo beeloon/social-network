@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { FollowerService } from './follower.service';
 import { CreateFollowerDto } from './dto/create-follower-dto';
-import { Followers } from '../../db/entities/Followers/followers';
+import { Followers } from '../../database/entities/followers';
 
 @Controller('followers')
 export class FollowerController {

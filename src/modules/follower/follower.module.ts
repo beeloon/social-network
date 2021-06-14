@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 import { FollowerController } from './follower.controller';
 import { FollowerService } from './follower.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Followers } from '../../db/entities/Followers/followers';
-import { User } from '../../db/entities/Users/user';
+import { Followers } from '../../database/entities/followers';
+import { User } from '../../database/entities/user';
 
 @Module({
   imports: [

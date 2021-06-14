@@ -5,8 +5,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PostModule } from './modules/post/post.module';
 import { FollowerModule } from './modules/follower/follower.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './db/entities/Users/user';
-import { Followers } from './db/entities/Followers/followers';
+import { User } from './database/entities/user';
+import { Followers } from './database/entities/followers';
 
 @Module({
   imports: [

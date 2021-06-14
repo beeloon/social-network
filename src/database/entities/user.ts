@@ -1,5 +1,4 @@
 import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 import {
   Entity,
   Column,
@@ -38,7 +37,6 @@ export class User {
 
   @BeforeInsert()
   async beforeInsertActions() {
-    this.id = uuidv4();
     this.password = await bcrypt.hash(this.password, 10);
   }
 }

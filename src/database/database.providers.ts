@@ -1,16 +1,13 @@
 import { ConfigService } from '@nestjs/config';
 import { createConnection } from 'typeorm';
 
-import {
-  MONGO_CONNECTION_TOKEN,
-  SQL_CONNECTION_TOKEN,
-} from './database.constants';
+import { MONGO_CONNECTION, SQL_CONNECTION } from './database.constants';
 
 import { RefreshToken } from 'src/database/entities';
 
 export const databaseProviders = [
   {
-    provide: SQL_CONNECTION_TOKEN,
+    provide: SQL_CONNECTION,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) =>
       await createConnection({
@@ -26,7 +23,7 @@ export const databaseProviders = [
   },
 
   {
-    provide: MONGO_CONNECTION_TOKEN,
+    provide: MONGO_CONNECTION,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) =>
       await createConnection({

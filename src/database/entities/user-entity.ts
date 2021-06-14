@@ -31,15 +31,8 @@ export class User {
   @Column()
   password: string;
 
-  //  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', update: false })
-  //  updatedAt: Date;
-
-  //  @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
-  //  createdAt: Date;
-
   @BeforeInsert()
   async beforeInsertActions() {
-    //this.id = uuidv4();
     this.password = await bcrypt.hash(this.password, 10);
   }
 }

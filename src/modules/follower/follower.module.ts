@@ -2,16 +2,13 @@ import { Module } from '@nestjs/common';
 
 import { FollowerController } from './follower.controller';
 import { FollowerService } from './follower.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Followers } from '../../database/entities/followers';
-import { User } from '../../database/entities/user';
+import { DatabaseModule } from '../../database/database.module';
+import { followerProviders } from '../../database/providers/create-follower-providers';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Followers]),
-    TypeOrmModule.forFeature([User]),
-  ],
+  imports: [DatabaseModule],
   controllers: [FollowerController],
-  providers: [FollowerService],
+  providers: [FollowerService, ...followerProviders],
 })
 export class FollowerModule {}

@@ -27,11 +27,11 @@ export class Followers {
   })
   status: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'followerId' })
+  @ManyToOne(() => User, (user) => user.followerId)
+  @JoinColumn({ name: 'followerId', referencedColumnName: 'id' })
   followerId: User;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'targetId' })
+  @ManyToOne(() => User, (user) => user.targetId)
+  @JoinColumn({ name: 'targetId', referencedColumnName: 'id' })
   targetId: User;
 }

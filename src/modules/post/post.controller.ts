@@ -8,11 +8,11 @@ import {
   Delete,
 } from '@nestjs/common';
 
-import { PostSchema } from '../../database/entities/postSchema-entity';
+import { PostSchema } from '../../database/entities/post.entity';
 import { CreatePostDto } from './dto/create-post-dto';
 import { UpdatePostDto } from './dto/update-post-dto';
 import { PostService } from './post.service';
-import { DeleteResult, UpdateResult } from 'typeorm';
+import { UpdateResult } from 'typeorm';
 
 @Controller('posts')
 export class PostController {
@@ -43,17 +43,11 @@ export class PostController {
     @Param('id') id: string,
     @Body() updatePostDto: UpdatePostDto,
   ): Promise<UpdateResult> {
-    const updatedPost = await this.postService.updatePost(id, updatePostDto);
-    return updatedPost;
+    return await this.postService.updatePost(id, updatePostDto);
   }
 
   @Delete(':id')
-  async removePost(@Param('id') prodId: string): Promise<DeleteResult> {
-    return await this.postService.deletePost(prodId);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id') id: string): Promise<DeleteResult> {
+  async delete(@Param('id') id: string): Promise<string> {
     return await this.postService.deletePost(id);
   }
 }

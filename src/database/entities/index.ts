@@ -1,3 +1,5 @@
-import { RefreshToken } from './reftesh-token.entity';
+import { User } from './user-entity';
+import { Post } from './post.entity';
+import { RefreshToken } from './refresh-token.entity';
 
-export { RefreshToken };
+export { RefreshToken, User, Post };

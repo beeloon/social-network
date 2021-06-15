@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
@@ -16,7 +16,7 @@ export class RefreshTokenService {
     private configService: ConfigService,
   ) {}
 
-  async create(userId: number): Promise<RefreshToken> {
+  async create(userId: string): Promise<RefreshToken> {
     const refreshToken = new RefreshToken();
 
     refreshToken.value = uuid();
@@ -32,20 +32,21 @@ export class RefreshTokenService {
     return savedToken;
   }
 
-  async delete(userId: number) {
-    const token = await this.refreshTokenRepository.delete({
+  async delete(userId: string): Promise<DeleteResult> {
+    const deletedTokenResultInfo = await this.refreshTokenRepository.delete({
       user_id: userId,
     });
 
-    return token;
+    return deletedTokenResultInfo;
   }
 
-  async generate(userId: number): Promise<string> {
+  async generate(userId: string): Promise<string> {
     const existedToken = await this.refreshTokenRepository.findOne({
       user_id: userId,
     });
 
-    if (existedToken && this.isNotExpired(existedToken.expires)) {
+    // If token expired and user login will throw duplicate tokens err
+    if (existedToken && !this.isExpired(existedToken)) {
       return existedToken.value;
     }
 
@@ -54,21 +55,23 @@ export class RefreshTokenService {
     return newToken.value;
   }
 
-  isNotExpired(expires: Date): boolean {
-    return expires > new Date();
+  isExpired(token: RefreshToken): boolean {
+    return token.expires <= new Date();
   }
 
-  async verify(userId: number, token: string): Promise<boolean> {
+  isValid(tokenValue: string, token: RefreshToken): boolean {
+    return bcrypt.compareSync(tokenValue, token.hash);
+  }
+
+  async verify(userId: string, token: string): Promise<RefreshToken> {
     const dbToken = await this.refreshTokenRepository.findOne({
       user_id: userId,
     });
 
-    if (dbToken == null) {
-      return false;
+    if (dbToken == null || !this.isValid(token, dbToken)) {
+      throw new BadRequestException('Invalid refresh token');
     }
 
-    const isTokensValid = await bcrypt.compare(token, dbToken.hash);
-
-    return isTokensValid;
+    return dbToken;
   }
 }

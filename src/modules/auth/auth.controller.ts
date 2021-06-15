@@ -12,12 +12,23 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JWTAuthGuard } from './guards/jwt-auth.guard';
 
 import { AuthService } from './auth.service';
+import { UserService } from '../user/user.service';
 
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { RefreshTokenValueDto } from './dto/refresh-token-value.dto';
+import { CreateUserDto } from '../user/dto/create-user-dto';
 
 @Controller()
 export class AuthController {
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    public userService: UserService,
+  ) {}
+
+  @UseGuards(JWTAuthGuard)
+  @Get('profile')
+  getProfile(@Req() req) {
+    return req.user;
+  }
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
@@ -26,19 +37,13 @@ export class AuthController {
   }
 
   @Post('auth/signup')
-  signup(@Body() createUserDto) {
-    return this.authService.signup(createUserDto);
-  }
-
-  @UseGuards(JWTAuthGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
+  signup(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
   @UseGuards(JWTAuthGuard)
   @Post('auth/refresh')
-  refresh(@Req() req, @Body() body: RefreshTokenDto) {
+  refresh(@Req() req, @Body() body: RefreshTokenValueDto) {
     return this.authService.refresh(req.user, body.refreshToken);
   }
 

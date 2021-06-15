@@ -1,3 +1,5 @@
-import { refreshTokenProviders } from './refresh-token.providers';
+import { refreshTokenProvider } from './refresh-token.provider';
+import { postProvider } from './post.provider';
+import { userProvider } from './user.provider';
 
-export { refreshTokenProviders };
+export { refreshTokenProvider, postProvider, userProvider };

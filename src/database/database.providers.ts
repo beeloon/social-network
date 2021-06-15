@@ -3,7 +3,7 @@ import { createConnection } from 'typeorm';
 
 import { MONGO_CONNECTION, SQL_CONNECTION } from './database.constants';
 
-import { RefreshToken } from 'src/database/entities';
+import { User, Post, RefreshToken } from 'src/database/entities';
 
 export const databaseProviders = [
   {
@@ -17,7 +17,7 @@ export const databaseProviders = [
         username: configService.get('sql.connectionOptions.username'),
         password: configService.get('sql.connectionOptions.password'),
         database: configService.get('sql.connectionOptions.database'),
-        entities: [RefreshToken],
+        entities: [RefreshToken, User],
         synchronize: true,
       }),
   },
@@ -32,7 +32,7 @@ export const databaseProviders = [
         useUnifiedTopology: true,
         useNewUrlParser: true,
         synchronize: true,
-        entities: [],
+        entities: [Post],
       }),
   },
 ];

@@ -1,5 +1,5 @@
 import { CreatePostDto } from './dto/create-post-dto';
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PostSchema } from '../../database/entities/post.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post-dto';

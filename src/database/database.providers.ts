@@ -6,7 +6,7 @@ import {
   SQL_CONNECTION_TOKEN,
 } from './database.constants';
 
-import { PostSchema, RefreshToken, User } from 'src/database/entities';
+import { PostSchema, RefreshToken, User, Followers } from 'src/database/entities';
 
 export const databaseProviders = [
   {
@@ -20,7 +20,7 @@ export const databaseProviders = [
         username: configService.get('sql.connectionOptions.username'),
         password: configService.get('sql.connectionOptions.password'),
         database: configService.get('sql.connectionOptions.database'),
-        entities: [RefreshToken, User],
+        entities: [RefreshToken, User, Followers],
         synchronize: true,
       }),
   },

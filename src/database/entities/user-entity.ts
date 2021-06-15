@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Column,
-  BeforeInsert,
-  Unique,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { Entity, Column, Unique, PrimaryGeneratedColumn } from 'typeorm';
 
 @Unique(['id'])
 @Unique(['email'])
@@ -22,9 +15,4 @@ export class User {
 
   @Column()
   password: string;
-
-  @BeforeInsert()
-  async beforeInsertActions() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }

@@ -24,7 +24,6 @@ export const databaseProviders = [
         synchronize: true,
       }),
   },
-
   {
     provide: MONGO_CONNECTION_TOKEN,
     inject: [ConfigService],

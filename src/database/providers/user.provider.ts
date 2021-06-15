@@ -4,7 +4,7 @@ import { User } from 'src/database/entities';
 
 import { USER_REPOSITORY, SQL_CONNECTION_TOKEN } from '../database.constants';
 
-export const userProviders = [
+export const userProvider = [
   {
     provide: USER_REPOSITORY,
     useFactory: (connection: Connection) => connection.getRepository(User),

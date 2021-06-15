@@ -7,7 +7,7 @@ import {
   POST_SCHEMA_REPOSITORY,
 } from '../database.constants';
 
-export const postSchemaProviders = [
+export const postProvider = [
   {
     provide: POST_SCHEMA_REPOSITORY,
     useFactory: (connection: Connection) =>

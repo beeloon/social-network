@@ -7,7 +7,7 @@ import {
   SQL_CONNECTION_TOKEN,
 } from '../database.constants';
 
-export const refreshTokenProviders = [
+export const refreshTokenProvider = [
   {
     provide: REFRESH_TOKEN_REPOSITORY,
     useFactory: (connection: Connection) =>

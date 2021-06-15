@@ -11,8 +11,14 @@ export class PostService {
     @Inject(POST_SCHEMA_REPOSITORY)
     private postRepository: Repository<PostSchema>,
   ) {}
+
   public async createPost(dto: CreatePostDto): Promise<PostSchema> {
-    return this.postRepository.save(dto);
+    try {
+      const post = this.postRepository.save(dto);
+      return post;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public async getAllPosts(): Promise<PostSchema[]> {
@@ -30,7 +36,6 @@ export class PostService {
       if (!post) {
         throw new Error();
       }
-
       return post;
     } catch (error) {
       console.log(error);

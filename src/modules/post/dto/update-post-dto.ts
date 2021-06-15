@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Length, IsOptional } from 'class-validator';
+import { IsNotEmpty, Length, IsOptional } from 'class-validator';
 
 export class UpdatePostDto {
   @IsOptional()
@@ -7,6 +7,5 @@ export class UpdatePostDto {
   title: string;
 
   @IsOptional()
-  @IsEmail()
   text: string;
 }

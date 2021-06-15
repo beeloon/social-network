@@ -16,7 +16,7 @@ export const databaseProviders = [
       await createConnection({
         type: configService.get('sql.connectionOptions.type'),
         host: configService.get('sql.connectionOptions.host'),
-        port: configService.get('sql.connectionOptions.port'),
+        port: parseInt(configService.get('sql.connectionOptions.port')),
         username: configService.get('sql.connectionOptions.username'),
         password: configService.get('sql.connectionOptions.password'),
         database: configService.get('sql.connectionOptions.database'),

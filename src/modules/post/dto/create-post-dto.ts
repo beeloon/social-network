@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { IsNotEmpty, Length } from 'class-validator';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -9,6 +9,6 @@ export class CreatePostDto {
   @Length(2, 255)
   text: string;
 
-  // @IsNotEmpty()
+  @IsNotEmpty()
   ownerId: string;
 }

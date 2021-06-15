@@ -2,12 +2,10 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { Injectable, Inject } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/database/entities/user-entity';
 import { USER_REPOSITORY } from 'src/database/database.constants';
 @Injectable()
 export class UserService {
-  //
   constructor(
     @Inject(USER_REPOSITORY)
     private userRepository: Repository<User>,

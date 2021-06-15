@@ -1,5 +1,5 @@
 import { followerProviders } from './follower.providers';
-import { refreshTokenProviders } from './refresh-token.provider';
-import { userProviders } from './user.providers';
-
-export { refreshTokenProviders, userProviders, followerProviders };
+import { refreshTokenProvider } from './refresh-token.provider';
+import { postProvider } from './post.providers';
+import { userProvider } from './user.provider';
+export { refreshTokenProvider, postProvider, userProvider, followerProviders };

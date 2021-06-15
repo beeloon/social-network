@@ -1,43 +1,67 @@
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
-import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../../database/entities';
+import { Injectable, Inject } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { User } from 'src/database/entities/user-entity';
 import { USER_REPOSITORY } from 'src/database/database.constants';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject(USER_REPOSITORY)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
-  async create(createUser: CreateUserDto): Promise<User> {
-    return this.usersRepository
-      .save(new User(createUser))
-      .catch((e) => e.message);
+  public async create(createUser: CreateUserDto): Promise<User> {
+    try {
+      const user = this.userRepository.create(createUser);
+      user.password = await bcrypt.hash(user.password, 10);
+      return this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  public async findAll(): Promise<User[]> {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  public async findById(id: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ where: { id } });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async findById(id: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { id } });
+  public async findByEmail(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async findByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { email } });
+  public async delete(id: string): Promise<DeleteResult> {
+    try {
+      return await this.userRepository.delete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async delete(id: string): Promise<DeleteResult> {
-    return this.usersRepository.delete(id);
-  }
-
-  async update(
+  public async update(
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
-    return this.usersRepository.update(id, updateUserDto);
+    try {
+      return await this.userRepository.update(id, updateUserDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

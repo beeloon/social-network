@@ -19,12 +19,11 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  async addPost(
+  addPost(
     @Body()
     postDto: CreatePostDto,
-  ): Promise<PostSchema> {
-    const result = await this.postService.createPost(postDto);
-    return result;
+  ): Promise<PostSchema | undefined> {
+    return this.postService.createPost(postDto);
   }
 
   @Get()

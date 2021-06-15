@@ -1,20 +1,29 @@
 import { CreatePostDto } from './dto/create-post-dto';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { PostSchema } from '../../database/entities/post.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post-dto';
-import { POST_SCHEMA_REPOSITORY } from '../../database/database.constants';
-
+import {
+  POST_SCHEMA_REPOSITORY,
+  USER_REPOSITORY,
+} from '../../database/database.constants';
+import { User } from '../../database/entities/user-entity';
 @Injectable()
 export class PostService {
   constructor(
     @Inject(POST_SCHEMA_REPOSITORY)
     private postRepository: Repository<PostSchema>,
+    @Inject(USER_REPOSITORY)
+    private userRepository: Repository<User>,
   ) {}
 
-  public async createPost(dto: CreatePostDto): Promise<PostSchema> {
+  public async createPost(dto: CreatePostDto): Promise<PostSchema | undefined> {
+    const owner = await this.userRepository.findOne(dto.ownerId);
+    if (!owner) {
+      throw new NotFoundException("User doesn't exist");
+    }
     try {
-      const post = this.postRepository.save(dto);
+      const post = await this.postRepository.save(dto);
       return post;
     } catch (error) {
       console.log(error);
@@ -47,7 +56,7 @@ export class PostService {
   ): Promise<UpdateResult> {
     const findPostForUpdate = await this.postRepository.findOneOrFail(id);
     if (!findPostForUpdate) {
-      `Post with id: ${id} doesn't exists`;
+      throw new NotFoundException(`Post with id: ${id} doesn't exists`);
     }
     return await this.postRepository.update(findPostForUpdate, updatePostDto);
   }
@@ -56,7 +65,7 @@ export class PostService {
     try {
       const findPostForDelete = await this.postRepository.findOneOrFail(id);
       if (!findPostForDelete) {
-        return `Post with id: ${id} doesn't exists`;
+        throw new NotFoundException(`Post with id: ${id} doesn't exists`);
       }
       await this.postRepository.remove(findPostForDelete);
       return id;

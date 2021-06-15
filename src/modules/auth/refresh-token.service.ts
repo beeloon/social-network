@@ -4,7 +4,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-import { RefreshToken } from '../../database/entities';
+import { RefreshToken } from 'src/database/entities';
 
 import { REFRESH_TOKEN_REPOSITORY } from 'src/database/database.constants';
 

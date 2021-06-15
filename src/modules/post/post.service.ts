@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository, UpdateResult } from 'typeorm';
 
-import { CreatePostDto } from './dto/create-post-dto';
-import { UpdatePostDto } from './dto/update-post-dto';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
-import { Post } from '../../database/entities/post.entity';
-import { POST_REPOSITORY } from '../../database/database.constants';
+import { Post } from 'src/database/entities';
+import { POST_REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class PostService {

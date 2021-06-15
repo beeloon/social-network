@@ -12,10 +12,10 @@ import { UpdateResult } from 'typeorm';
 
 import { PostService } from './post.service';
 
-import { CreatePostDto } from './dto/create-post-dto';
-import { UpdatePostDto } from './dto/update-post-dto';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
-import { Post as PostEntity } from '../../database/entities/post.entity';
+import { Post as PostEntity } from 'src/database/entities';
 
 import { JWTAuthGuard } from '../auth/guards/jwt-auth.guard';
 

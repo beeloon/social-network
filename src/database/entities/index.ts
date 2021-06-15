@@ -1,5 +1,6 @@
-import { User } from './user-entity';
+import { User } from './user.entity';
 import { Post } from './post.entity';
+import { Followers } from './follower.entity';
 import { RefreshToken } from './refresh-token.entity';
 
-export { RefreshToken, User, Post };
+export { RefreshToken, Followers, User, Post };

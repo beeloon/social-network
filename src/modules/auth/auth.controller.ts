@@ -15,7 +15,7 @@ import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 
 import { RefreshTokenValueDto } from './dto/refresh-token-value.dto';
-import { CreateUserDto } from '../user/dto/create-user-dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 
 @Controller()
 export class AuthController {

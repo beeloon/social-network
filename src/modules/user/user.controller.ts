@@ -9,11 +9,11 @@ import {
 } from '@nestjs/common';
 import { DeleteResult, UpdateResult } from 'typeorm';
 
-import { UpdateUserDto } from './dto/update-user-dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 import { UserService } from './user.service';
 
-import { User } from '../../database/entities/user-entity';
+import { User } from 'src/database/entities';
 
 import { JWTAuthGuard } from '../auth/guards/jwt-auth.guard';
 

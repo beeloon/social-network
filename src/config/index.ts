@@ -1,3 +1,4 @@
+
 interface Configuration {
   port: number;
   token: {

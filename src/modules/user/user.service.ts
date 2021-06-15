@@ -4,12 +4,14 @@ import { Injectable, Inject } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { User } from 'src/database/entities/user-entity';
 import { USER_REPOSITORY } from 'src/database/database.constants';
+
 @Injectable()
 export class UserService {
   constructor(
     @Inject(USER_REPOSITORY)
     private userRepository: Repository<User>,
   ) {}
+
 
   public async create(createUser: CreateUserDto): Promise<User> {
     return await this.userRepository

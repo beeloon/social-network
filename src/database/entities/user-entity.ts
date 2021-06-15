@@ -7,10 +7,12 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
+
 @Unique(['id'])
 @Unique(['email'])
 @Entity({ name: 'users' })
 export class User {
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

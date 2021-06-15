@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { createConnection } from 'typeorm';
 
+
 import {
   MONGO_CONNECTION_TOKEN,
   SQL_CONNECTION_TOKEN,
@@ -24,7 +25,6 @@ export const databaseProviders = [
         synchronize: true,
       }),
   },
-
   {
     provide: MONGO_CONNECTION_TOKEN,
     inject: [ConfigService],

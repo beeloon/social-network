@@ -45,9 +45,9 @@ export class PostController {
   ): Promise<UpdateResult> {
     return await this.postService.updatePost(id, updatePostDto);
   }
-
+  
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<string> {
+  async delete(@Param('id') id: string): Promise<DeleteResult> {
     return await this.postService.deletePost(id);
   }
 }

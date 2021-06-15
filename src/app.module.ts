@@ -14,7 +14,7 @@ import { DatabaseModule } from './database/database.module';
     }),
     DatabaseModule,
     UserModule,
-    //PostModule,
+    PostModule,
     AuthModule,
     FollowerModule,
   ],

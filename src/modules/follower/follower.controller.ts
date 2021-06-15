@@ -1,15 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Post, Body, Delete, Patch } from '@nestjs/common';
 import { FollowerService } from './follower.service';
 import { CreateFollowerDto } from './dto/create-follower-dto';
-import { Followers } from '../../database/entities/followers';
+import { Followers } from '../../database/entities';
 
 @Controller('followers')
 export class FollowerController {

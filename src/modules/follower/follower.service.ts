@@ -1,17 +1,17 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Followers } from '../../database/entities/followers';
+import { Followers } from '../../database/entities';
 import { CreateFollowerDto } from './dto/create-follower-dto';
-import { User } from '../../database/entities/user';
+import { User } from '../../database/entities';
 import {
-  FOLLOWERS_REPOSITORY,
+  FOLLOWER_REPOSITORY,
   USER_REPOSITORY,
 } from '../../database/database.constants';
 
 @Injectable()
 export class FollowerService {
   constructor(
-    @Inject(FOLLOWERS_REPOSITORY)
+    @Inject(FOLLOWER_REPOSITORY)
     private followersRepository: Repository<Followers>,
     @Inject(USER_REPOSITORY)
     private usersRepository: Repository<User>,

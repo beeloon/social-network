@@ -4,8 +4,8 @@ import { createConnection } from 'typeorm';
 import { MONGO_CONNECTION, SQL_CONNECTION } from './database.constants';
 
 import { RefreshToken } from './entities';
-import { Followers } from './entities/followers';
-import { User } from './entities/user';
+import { Followers } from './entities';
+import { User } from './entities';
 
 export const databaseProviders = [
   {

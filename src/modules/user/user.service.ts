@@ -1,27 +1,67 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
-
 import { CreateUserDto } from './dto/create-user-dto';
-import { User, UserDocument } from './schemas/user.schema';
+import { UpdateUserDto } from './dto/update-user-dto';
+import { Injectable, Inject } from '@nestjs/common';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { User } from 'src/database/entities/user-entity';
+import { USER_REPOSITORY } from 'src/database/database.constants';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @Inject(USER_REPOSITORY)
+    private userRepository: Repository<User>,
+  ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const saltOrRounds = 10;
-    const password = createUserDto.password;
-    const hash = await bcrypt.hash(password, saltOrRounds);
-
-    createUserDto.password = hash;
-    const createdUser = new this.userModel(createUserDto);
-
-    return createdUser.save();
+  public async create(createUser: CreateUserDto): Promise<User> {
+    try {
+      const user = this.userRepository.create(createUser);
+      user.password = await bcrypt.hash(user.password, 10);
+      return this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  public async findAll(): Promise<User[]> {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  public async findById(id: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ where: { id } });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async findByEmail(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async delete(id: string): Promise<DeleteResult> {
+    try {
+      return await this.userRepository.delete(id);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  public async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UpdateResult> {
+    try {
+      return await this.userRepository.update(id, updateUserDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

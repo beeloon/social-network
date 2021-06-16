@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -17,11 +22,11 @@ export class UserService {
 
   public async create(createUser: CreateUserDto): Promise<User> {
     try {
-      const user = this.userRepository.create(createUser);
+      const user = await this.userRepository.create(createUser);
       user.password = await bcrypt.hash(user.password, 10);
-      return this.userRepository.save(user);
-    } catch (error) {
-      console.log(error);
+      return await this.userRepository.save(user);
+    } catch (err) {
+      throw new ConflictException(err);
     }
   }
   public async findAll(): Promise<User[]> {

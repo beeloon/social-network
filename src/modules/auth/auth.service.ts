@@ -7,8 +7,7 @@ import { RefreshTokenService } from './refresh-token.service';
 
 import { TokenPair } from './interfaces/token-pair.interface';
 import { AccessToken } from './interfaces/access-token.interface';
-
-import { User } from 'src/database/entities';
+import { AuthenticatedUserInfo } from './interfaces/authenticated-user-info.interface';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +17,7 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService,
   ) {}
 
-  async issueTokenPair(user: User): Promise<TokenPair> {
+  async issueTokenPair(user: AuthenticatedUserInfo): Promise<TokenPair> {
     const payload = { username: user.username, id: user.id };
 
     const token = this.jwtService.sign(payload);
@@ -31,18 +30,23 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<AuthenticatedUserInfo | null> {
     const user = await this.userService.findByEmail(email);
 
     if (user && bcrypt.compare(pass, user.password)) {
-      const { password, ...result } = user;
-      return result;
+      const { id, username, email } = user;
+      const authenticatedUserInfo = { id, username, email };
+
+      return authenticatedUserInfo;
     }
 
     return null;
   }
 
-  async login(user: User): Promise<TokenPair> {
+  async login(user: AuthenticatedUserInfo): Promise<TokenPair> {
     const tokenPair = await this.issueTokenPair(user);
 
     return tokenPair;
@@ -60,18 +64,24 @@ export class AuthService {
     return HttpStatus.NO_CONTENT;
   }
 
-  async refresh(user: User, token: string): Promise<TokenPair | AccessToken> {
-    const dbToken = await this.refreshTokenService.verify(user.id, token);
+  async refresh(
+    userInfo: AuthenticatedUserInfo,
+    token: string,
+  ): Promise<TokenPair | AccessToken> {
+    const dbToken = await this.refreshTokenService.verify(userInfo.id, token);
 
     if (this.refreshTokenService.isExpired(dbToken)) {
-      await this.refreshTokenService.delete(user.id);
-      const tokenPair = await this.issueTokenPair(user);
+      await this.refreshTokenService.delete(userInfo.id);
+      const tokenPair = await this.issueTokenPair(userInfo);
 
       return tokenPair;
     }
 
     return {
-      token: this.jwtService.sign({ username: user.username, id: user.id }),
+      token: this.jwtService.sign({
+        username: userInfo.username,
+        id: userInfo.id,
+      }),
     };
   }
 }

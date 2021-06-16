@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { FollowerService } from './follower.service';
 import { CreateFollowerDto } from './dto/create-follower.dto';
-import { Followers } from 'src/database/entities';
+import { Follower } from 'src/database/entities';
 
 import { JWTAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -20,28 +20,28 @@ export class FollowerController {
   @Post('follow')
   create(
     @Body() createFollowerDto: CreateFollowerDto,
-  ): Promise<Followers | string> {
+  ): Promise<Follower | string> {
     return this.followerService.create(createFollowerDto);
   }
 
   @Patch('accept')
   accept(
     @Body() createFollowerDto: CreateFollowerDto,
-  ): Promise<Followers | string> {
+  ): Promise<Follower | string> {
     return this.followerService.update(createFollowerDto, 'Accepted');
   }
 
   @Patch('decline')
   decline(
     @Body() createFollowerDto: CreateFollowerDto,
-  ): Promise<Followers | string> {
+  ): Promise<Follower | string> {
     return this.followerService.update(createFollowerDto, 'Declined');
   }
 
   @Delete('unfollow')
   delete(
     @Body() createFollowerDto: CreateFollowerDto,
-  ): Promise<Followers | string> {
+  ): Promise<Follower | string> {
     return this.followerService.delete(createFollowerDto);
   }
 }

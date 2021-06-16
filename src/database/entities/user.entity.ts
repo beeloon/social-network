@@ -12,7 +12,7 @@ import { CreateUserDto } from '../../modules/user/dto/create-user.dto';
 
 @Unique(['id'])
 @Unique(['email'])
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   constructor(userDto: CreateUserDto) {
     Object.assign(this, userDto);

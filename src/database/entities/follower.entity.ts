@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity()
-export class Followers {
+@Entity({ name: 'followers' })
+export class Follower {
   constructor(followerUser: User, targetUser: User) {
     this.followerId = followerUser;
     this.targetId = targetUser;

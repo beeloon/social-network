@@ -2,12 +2,12 @@ import { Connection } from 'typeorm';
 
 import { User } from 'src/database/entities';
 
-import { USER_REPOSITORY, SQL_CONNECTION_TOKEN } from '../database.constants';
+import { REPOSITORY, DATABASE } from '../database.constants';
 
 export const userProvider = [
   {
-    provide: USER_REPOSITORY,
+    provide: REPOSITORY.User,
     useFactory: (connection: Connection) => connection.getRepository(User),
-    inject: [SQL_CONNECTION_TOKEN],
+    inject: [DATABASE.Sql],
   },
 ];

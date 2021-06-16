@@ -1,23 +1,20 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Followers } from '../../database/entities';
-import { CreateFollowerDto } from './dto/create-follower-dto';
-import { User } from '../../database/entities';
-import {
-  FOLLOWER_REPOSITORY,
-  USER_REPOSITORY,
-} from '../../database/database.constants';
+import { Follower } from 'src/database/entities';
+import { CreateFollowerDto } from './dto/create-follower.dto';
+import { User } from 'src/database/entities';
+import { REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class FollowerService {
   constructor(
-    @Inject(FOLLOWER_REPOSITORY)
-    private followersRepository: Repository<Followers>,
-    @Inject(USER_REPOSITORY)
+    @Inject(REPOSITORY.Follwer)
+    private followersRepository: Repository<Follower>,
+    @Inject(REPOSITORY.User)
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(createFollower: CreateFollowerDto): Promise<Followers | string> {
+  async create(createFollower: CreateFollowerDto): Promise<Follower | string> {
     const users = await this.usersRepository
       .findByIds([createFollower.followerId, createFollower.targetId])
       .catch((e) => e.message);
@@ -25,14 +22,14 @@ export class FollowerService {
       return 'No such user';
     }
     return this.followersRepository
-      .save(new Followers(users[0], users[1]))
+      .save(new Follower(users[0], users[1]))
       .catch((e) => e.message);
   }
 
   async update(
     createFollower: CreateFollowerDto,
     status: string,
-  ): Promise<Followers | string> {
+  ): Promise<Follower | string> {
     const users = await this.usersRepository
       .findByIds([createFollower.targetId, createFollower.followerId])
       .catch((e) => e.message);
@@ -63,7 +60,7 @@ export class FollowerService {
     });
   }
 
-  async delete(createFollower: CreateFollowerDto): Promise<Followers | string> {
+  async delete(createFollower: CreateFollowerDto): Promise<Follower | string> {
     const followersPair = await this.followersRepository
       .findOne({
         where: {

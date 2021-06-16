@@ -5,12 +5,12 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 import { Post } from 'src/database/entities';
-import { POST_REPOSITORY } from 'src/database/database.constants';
+import { REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class PostService {
   constructor(
-    @Inject(POST_REPOSITORY)
+    @Inject(REPOSITORY.Post)
     private postRepository: Repository<Post>,
   ) {}
 

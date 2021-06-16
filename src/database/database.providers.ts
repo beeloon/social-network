@@ -1,17 +1,17 @@
 import { ConfigService } from '@nestjs/config';
 import { createConnection } from 'typeorm';
 
-import { MONGO_CONNECTION, SQL_CONNECTION } from './database.constants';
+import { DATABASE } from './database.constants';
 
 import { User, Post, Follower, RefreshToken } from 'src/database/entities';
 
 export const databaseProviders = [
   {
-    provide: SQL_CONNECTION,
+    provide: DATABASE.Sql,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) =>
       await createConnection({
-        type: configService.get('sql.connectionOptions.type'),
+        type: 'mysql',
         host: configService.get('sql.connectionOptions.host'),
         port: configService.get('sql.connectionOptions.port'),
         username: configService.get('sql.connectionOptions.username'),
@@ -23,11 +23,11 @@ export const databaseProviders = [
   },
 
   {
-    provide: MONGO_CONNECTION,
+    provide: DATABASE.Mongo,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) =>
       await createConnection({
-        type: configService.get('mongo.connectionOptions.type'),
+        type: 'mongodb',
         url: configService.get('mongo.connectionOptions.uri'),
         useUnifiedTopology: true,
         useNewUrlParser: true,

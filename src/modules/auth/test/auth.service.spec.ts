@@ -1,19 +1,21 @@
-import { Test, TestingModule } from '@nestjs/testing';
-
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../../user/user.service';
 import { AuthService } from '../auth.service';
+import { RefreshTokenService } from '../refresh-token.service';
 
 describe('AuthService', () => {
-  let provider: AuthService;
+  let authService: AuthService;
+  let jwtService: JwtService;
+  let userService: UserService;
+  let refreshTokenService: RefreshTokenService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
-    }).compile();
-
-    provider = module.get<AuthService>(AuthService);
+    authService = new AuthService(jwtService, userService, refreshTokenService);
   });
 
-  it('should be defined', () => {
-    expect(provider).toBeDefined();
+  describe('issueTokenPair', () => {
+    it('should return an object with user auth information', async () => {
+      return '';
+    });
   });
 });

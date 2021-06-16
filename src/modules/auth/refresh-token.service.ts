@@ -6,12 +6,12 @@ import * as bcrypt from 'bcrypt';
 
 import { RefreshToken } from 'src/database/entities';
 
-import { REFRESH_TOKEN_REPOSITORY } from 'src/database/database.constants';
+import { REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class RefreshTokenService {
   constructor(
-    @Inject(REFRESH_TOKEN_REPOSITORY)
+    @Inject(REPOSITORY.RefreshToken)
     private refreshTokenRepository: Repository<RefreshToken>,
     private configService: ConfigService,
   ) {}
@@ -68,7 +68,7 @@ export class RefreshTokenService {
       user_id: userId,
     });
 
-    if (dbToken == null || !this.isValid(token, dbToken)) {
+    if (!dbToken || !this.isValid(token, dbToken)) {
       throw new BadRequestException('Invalid refresh token');
     }
 

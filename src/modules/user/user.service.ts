@@ -11,12 +11,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 import { User } from 'src/database/entities';
-import { USER_REPOSITORY } from 'src/database/database.constants';
+import { REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject(USER_REPOSITORY)
+    @Inject(REPOSITORY.User)
     private userRepository: Repository<User>,
   ) {}
 

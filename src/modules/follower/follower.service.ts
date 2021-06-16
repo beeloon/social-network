@@ -3,17 +3,14 @@ import { Repository } from 'typeorm';
 import { Follower } from 'src/database/entities';
 import { CreateFollowerDto } from './dto/create-follower.dto';
 import { User } from 'src/database/entities';
-import {
-  FOLLOWER_REPOSITORY,
-  USER_REPOSITORY,
-} from 'src/database/database.constants';
+import { REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class FollowerService {
   constructor(
-    @Inject(FOLLOWER_REPOSITORY)
+    @Inject(REPOSITORY.Follwer)
     private followersRepository: Repository<Follower>,
-    @Inject(USER_REPOSITORY)
+    @Inject(REPOSITORY.User)
     private usersRepository: Repository<User>,
   ) {}
 

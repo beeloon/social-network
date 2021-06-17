@@ -1,18 +1,20 @@
-import { CreatePostDto } from './dto/create-post-dto';
 import { Injectable, Inject } from '@nestjs/common';
-import { PostSchema } from '../../database/entities/post.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import { UpdatePostDto } from './dto/update-post-dto';
-import { POST_SCHEMA_REPOSITORY } from '../../database/database.constants';
+
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+
+import { Post } from 'src/database/entities';
+import { REPOSITORY } from 'src/database/database.constants';
 
 @Injectable()
 export class PostService {
   constructor(
-    @Inject(POST_SCHEMA_REPOSITORY)
-    private postRepository: Repository<PostSchema>,
+    @Inject(REPOSITORY.Post)
+    private postRepository: Repository<Post>,
   ) {}
 
-  public async createPost(dto: CreatePostDto): Promise<PostSchema> {
+  public async createPost(dto: CreatePostDto): Promise<Post> {
     try {
       const post = this.postRepository.save(dto);
       return post;
@@ -21,7 +23,7 @@ export class PostService {
     }
   }
 
-  public async getAllPosts(): Promise<PostSchema[]> {
+  public async getAllPosts(): Promise<Post[]> {
     try {
       const result = this.postRepository.find();
       return result;
@@ -30,7 +32,7 @@ export class PostService {
     }
   }
 
-  public async getSinglePost(postId: string): Promise<PostSchema> {
+  public async getSinglePost(postId: string): Promise<Post> {
     try {
       const post = await this.postRepository.findOneOrFail(postId);
       if (!post) {

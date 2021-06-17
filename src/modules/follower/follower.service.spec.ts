@@ -1,9 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FollowerService } from './follower.service';
-import {
-  FOLLOWER_REPOSITORY,
-  USER_REPOSITORY,
-} from '../../database/database.constants';
+import { REPOSITORY } from '../../database/database.constants';
 
 describe('FollowerService', () => {
   let service: FollowerService;
@@ -44,11 +41,11 @@ describe('FollowerService', () => {
       providers: [
         FollowerService,
         {
-          provide: FOLLOWER_REPOSITORY,
+          provide: REPOSITORY.Follwer,
           useValue: mockFollowerRepository,
         },
         {
-          provide: USER_REPOSITORY,
+          provide: REPOSITORY.User,
           useValue: mockUserRepository,
         },
       ],

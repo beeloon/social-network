@@ -1,7 +1,4 @@
-import { Followers } from './followers.entity';
-import { RefreshToken } from './reftesh-token.entity';
-import { User } from './user.entity';
-import { PostSchema } from './post.entity';
-
-export { RefreshToken, Followers, User, PostSchema };
-
+export { User } from './user.entity';
+export { Post } from './post.entity';
+export { Follower } from './follower.entity';
+export { RefreshToken } from './refresh-token.entity';

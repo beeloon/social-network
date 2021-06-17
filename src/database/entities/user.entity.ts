@@ -8,11 +8,11 @@ import {
   Unique,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CreateUserDto } from '../../modules/user/dto/create-user-dto';
+import { CreateUserDto } from '../../modules/user/dto/create-user.dto';
 
 @Unique(['id'])
 @Unique(['email'])
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   constructor(userDto: CreateUserDto) {
     Object.assign(this, userDto);
@@ -21,7 +21,7 @@ export class User {
   id: string;
 
   @Column()
-  name: string;
+  username: string;
 
   @Column()
   email: string;

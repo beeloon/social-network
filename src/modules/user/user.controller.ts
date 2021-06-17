@@ -1,27 +1,26 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Param,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user-dto';
-import { User } from '../../database/entities';
-
-import { UserService } from './user.service';
-import { UpdateUserDto } from './dto/update-user-dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
 
+import { UpdateUserDto } from './dto/update-user.dto';
+
+import { UserService } from './user.service';
+
+import { User } from 'src/database/entities';
+
+import { JWTAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@UseGuards(JWTAuthGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
 
   @Get()
   findAll() {
@@ -42,6 +41,7 @@ export class UserController {
   delete(@Param('id') id: string): Promise<DeleteResult> {
     return this.userService.delete(id);
   }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

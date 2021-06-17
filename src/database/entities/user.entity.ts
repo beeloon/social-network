@@ -8,7 +8,7 @@ import {
   Unique,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CreateUserDto } from '../../modules/user/dto/create-user-dto';
+import { CreateUserDto } from '../../modules/user/dto/create-user.dto';
 
 @Unique(['id'])
 @Unique(['email'])

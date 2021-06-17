@@ -1,6 +1,11 @@
-export const SQL_CONNECTION_TOKEN = 'SqlConnectionToken';
-export const MONGO_CONNECTION_TOKEN = 'MongoConnectionToken';
+export enum DATABASE {
+  Sql = 'SQL',
+  Mongo = 'MONGO',
+}
 
-export const REFRESH_TOKEN_REPOSITORY = 'REFRESH_TOKEN_REPOSITORY';
-export const POST_SCHEMA_REPOSITORY = 'POST_SCHEMA_REPOSITORY';
-export const USER_REPOSITORY = 'USER_REPOSITORY';
+export enum REPOSITORY {
+  User = 'User',
+  Post = 'Post',
+  Follwer = 'Follwer',
+  RefreshToken = 'RefreshToken',
+}

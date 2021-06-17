@@ -1,0 +1,21 @@
+{
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "admin",
+  "password": "password",
+  "database": "user_system",
+  "synchronize": true,
+  "entities": [
+    "src/database/entities/user-entity.ts",
+    "src/database/entities/refresh-token-entity.ts"
+  ],
+  "migrations": ["src/database/migrations/*.ts"],
+  "cli": {
+    "entitiesDir": [
+      "src/database/entities/user-entity.ts",
+      "src/database/entities/refresh-token-entity.ts"
+    ],
+    "migrationsDir": "src/database/migrations"
+  }
+}

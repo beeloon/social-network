@@ -19,22 +19,21 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  addPost(
+  async addPost(
     @Body()
     postDto: CreatePostDto,
   ): Promise<PostSchema | undefined> {
-    return this.postService.createPost(postDto);
+    return await this.postService.createPost(postDto);
   }
 
   @Get()
   async getAllPosts(): Promise<PostSchema[]> {
-    const posts = await this.postService.getAllPosts();
-    return posts;
+    return await this.postService.getAllPosts();
   }
 
   @Get(':id')
   async getSinglePost(@Param('id') postId: string): Promise<PostSchema> {
-    return this.postService.getSinglePost(postId);
+    return await this.postService.getSinglePost(postId);
   }
 
   @Patch(':id')

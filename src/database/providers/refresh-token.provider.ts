@@ -4,14 +4,14 @@ import { RefreshToken } from 'src/database/entities';
 
 import {
   REFRESH_TOKEN_REPOSITORY,
-  SQL_CONNECTION,
+  SQL_CONNECTION_TOKEN,
 } from '../database.constants';
 
-export const refreshTokenProviders = [
+export const refreshTokenProvider = [
   {
     provide: REFRESH_TOKEN_REPOSITORY,
     useFactory: (connection: Connection) =>
       connection.getRepository(RefreshToken),
-    inject: [SQL_CONNECTION],
+    inject: [SQL_CONNECTION_TOKEN],
   },
 ];

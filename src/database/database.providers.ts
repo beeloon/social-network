@@ -1,21 +1,22 @@
 import { ConfigService } from '@nestjs/config';
 import { createConnection } from 'typeorm';
 
-import { MONGO_CONNECTION, SQL_CONNECTION } from './database.constants';
+import {
+  MONGO_CONNECTION_TOKEN,
+  SQL_CONNECTION_TOKEN,
+} from './database.constants';
 
-import { RefreshToken } from './entities';
-import { Followers } from './entities';
-import { User } from './entities';
+import { PostSchema, RefreshToken, User, Followers } from 'src/database/entities';
 
 export const databaseProviders = [
   {
-    provide: SQL_CONNECTION,
+    provide: SQL_CONNECTION_TOKEN,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) =>
       await createConnection({
         type: configService.get('sql.connectionOptions.type'),
         host: configService.get('sql.connectionOptions.host'),
-        port: configService.get('sql.connectionOptions.port'),
+        port: parseInt(configService.get('sql.connectionOptions.port')),
         username: configService.get('sql.connectionOptions.username'),
         password: configService.get('sql.connectionOptions.password'),
         database: configService.get('sql.connectionOptions.database'),
@@ -23,9 +24,8 @@ export const databaseProviders = [
         synchronize: true,
       }),
   },
-
   {
-    provide: MONGO_CONNECTION,
+    provide: MONGO_CONNECTION_TOKEN,
     inject: [ConfigService],
     useFactory: async (configService: ConfigService) =>
       await createConnection({
@@ -34,7 +34,7 @@ export const databaseProviders = [
         useUnifiedTopology: true,
         useNewUrlParser: true,
         synchronize: true,
-        entities: [],
+        entities: [PostSchema],
       }),
   },
 ];

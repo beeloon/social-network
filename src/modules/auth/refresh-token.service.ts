@@ -1,12 +1,12 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DeleteResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
-import { RefreshToken } from 'src/database/entities';
+import { RefreshToken } from '../../database/entities';
 
-import { REPOSITORY } from 'src/database/database.constants';
+import { REPOSITORY } from '../../database/database.constants';
 
 @Injectable()
 export class RefreshTokenService {
@@ -32,12 +32,13 @@ export class RefreshTokenService {
     return savedToken;
   }
 
-  async delete(userId: string): Promise<DeleteResult> {
-    const deletedTokenResultInfo = await this.refreshTokenRepository.delete({
-      user_id: userId,
-    });
+  async delete(userId: string): Promise<boolean> {
+    const { affected: numberOfDeletedRows } =
+      await this.refreshTokenRepository.delete({
+        user_id: userId,
+      });
 
-    return deletedTokenResultInfo;
+    return numberOfDeletedRows > 0;
   }
 
   async generate(userId: string): Promise<string> {

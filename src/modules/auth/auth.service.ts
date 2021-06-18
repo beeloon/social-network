@@ -23,11 +23,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     const refreshToken = await this.refreshTokenService.generate(payload.id);
 
-    return {
-      token,
-      refreshToken,
-      tokenType: 'Bearer',
-    };
+    return { token, refreshToken };
   }
 
   async validateUser(
@@ -53,15 +49,9 @@ export class AuthService {
   }
 
   async logout(userId: string): Promise<HttpStatus> {
-    const { affected: isTokensDeleted } = await this.refreshTokenService.delete(
-      userId,
-    );
+    const isTokensDeleted = await this.refreshTokenService.delete(userId);
 
-    if (isTokensDeleted) {
-      return HttpStatus.OK;
-    }
-
-    return HttpStatus.NO_CONTENT;
+    return isTokensDeleted ? HttpStatus.OK : HttpStatus.NO_CONTENT;
   }
 
   async refresh(

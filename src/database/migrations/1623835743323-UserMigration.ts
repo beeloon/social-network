@@ -9,9 +9,9 @@ export class UserMigration1623835743323 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'string',
+            type: 'varchar',
+            width: 36,
             isPrimary: true,
-            isGenerated: true,
           },
           {
             name: 'username',

@@ -1,6 +1,13 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableIndex,
+  TableColumn,
+  TableForeignKey,
+} from 'typeorm';
 
-export class UserMigration1623835743323 implements MigrationInterface {
+export class RefreshTokenMigration1623838730791 implements MigrationInterface {
   private readonly tableName = 'refresh_tokens';
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -9,9 +16,9 @@ export class UserMigration1623835743323 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'string',
+            type: 'varchar',
+            width: 36,
             isPrimary: true,
-            isGenerated: true,
           },
           {
             name: 'value',
@@ -24,14 +31,22 @@ export class UserMigration1623835743323 implements MigrationInterface {
             isUnique: true,
           },
           {
-            name: 'user_id',
-            type: 'int',
-            isNullable: true,
-          },
-          {
             name: 'expires',
             type: 'datetime',
           },
+          {
+            name: 'user_id',
+            type: 'varchar',
+            width: 36,
+          },
+        ],
+        foreignKeys: [
+          new TableForeignKey({
+            name: 'users_fk_1',
+            referencedTableName: 'users',
+            columnNames: ['user_id'],
+            referencedColumnNames: ['id'],
+          }),
         ],
       }),
     );

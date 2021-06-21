@@ -1,6 +1,13 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableIndex,
+  TableColumn,
+  TableForeignKey,
+} from 'typeorm';
 
-export class UserMigration1623835743323 implements MigrationInterface {
+export class FollowerMigration1623836342195 implements MigrationInterface {
   private readonly tableName = 'followers';
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -9,17 +16,39 @@ export class UserMigration1623835743323 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'string',
+            type: 'varchar',
+            width: 36,
             isPrimary: true,
-            isGenerated: true,
           },
           {
             name: 'status',
             type: 'enum',
             enum: ['Pending', 'Accepted', 'Declined'],
-            width: 255,
-            default: 'Pending',
           },
+          {
+            name: 'followerId',
+            type: 'varchar',
+            width: 36,
+          },
+          {
+            name: 'targetId',
+            type: 'varchar',
+            width: 36,
+          },
+        ],
+        foreignKeys: [
+          new TableForeignKey({
+            name: 'followerId_fk_1',
+            referencedTableName: 'users',
+            columnNames: ['followerId'],
+            referencedColumnNames: ['id'],
+          }),
+          new TableForeignKey({
+            name: 'targetId_fk_1',
+            referencedTableName: 'users',
+            columnNames: ['targetId'],
+            referencedColumnNames: ['id'],
+          }),
         ],
       }),
     );

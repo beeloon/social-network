@@ -5,10 +5,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from './user-entity';
+import { User } from './user.entity';
 
 @Entity({ name: 'followers' })
-export class Followers {
+export class Follower {
   constructor(followerUser: User, targetUser: User) {
     this.followerId = followerUser;
     this.targetId = targetUser;

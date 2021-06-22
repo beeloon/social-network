@@ -1,27 +1,25 @@
-import { CreatePostDto } from './dto/create-post-dto';
+import { CreatePostDto } from './dto/create-post.dto';
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { PostSchema } from '../../database/entities/post.entity';
+import { Post } from '../../database/entities/post.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import { UpdatePostDto } from './dto/update-post-dto';
-import {
-  POST_SCHEMA_REPOSITORY,
-  USER_REPOSITORY,
-} from '../../database/database.constants';
-import { User } from '../../database/entities/user-entity';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { REPOSITORY } from '../../database/database.constants';
+import { User } from '../../database/entities/user.entity';
 @Injectable()
 export class PostService {
   constructor(
-    @Inject(POST_SCHEMA_REPOSITORY)
-    private postRepository: Repository<PostSchema>,
-    @Inject(USER_REPOSITORY)
+    @Inject(REPOSITORY.Post)
+    private postRepository: Repository<Post>,
+    @Inject(REPOSITORY.User)
     private userRepository: Repository<User>,
   ) {}
 
-  public async createPost(dto: CreatePostDto): Promise<PostSchema | undefined> {
+  public async createPost(dto: CreatePostDto): Promise<Post | undefined> {
     const owner = await this.userRepository.findOne(dto.ownerId);
     if (!owner) {
       throw new NotFoundException("User doesn't exist");
     }
+
     try {
       const post = await this.postRepository.save(dto);
       return post;
@@ -30,7 +28,7 @@ export class PostService {
     }
   }
 
-  public async getAllPosts(): Promise<PostSchema[]> {
+  public async getAllPosts(): Promise<Post[]> {
     try {
       const result = this.postRepository.find();
       return result;
@@ -39,7 +37,7 @@ export class PostService {
     }
   }
 
-  public async getSinglePost(postId: string): Promise<PostSchema> {
+  public async getSinglePost(postId: string): Promise<Post> {
     try {
       const post = await this.postRepository.findOneOrFail(postId);
       if (!post) {

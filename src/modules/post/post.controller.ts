@@ -6,14 +6,20 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
-
-import { PostSchema } from '../../database/entities/post.entity';
-import { CreatePostDto } from './dto/create-post-dto';
-import { UpdatePostDto } from './dto/update-post-dto';
-import { PostService } from './post.service';
 import { UpdateResult } from 'typeorm';
 
+import { PostService } from './post.service';
+
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+
+import { Post as PostEntity } from 'src/database/entities';
+
+import { JWTAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@UseGuards(JWTAuthGuard)
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -22,17 +28,17 @@ export class PostController {
   async addPost(
     @Body()
     postDto: CreatePostDto,
-  ): Promise<PostSchema | undefined> {
+  ): Promise<PostEntity> {
     return await this.postService.createPost(postDto);
   }
 
   @Get()
-  async getAllPosts(): Promise<PostSchema[]> {
+  async getAllPosts(): Promise<PostEntity[]> {
     return await this.postService.getAllPosts();
   }
 
   @Get(':id')
-  async getSinglePost(@Param('id') postId: string): Promise<PostSchema> {
+  async getSinglePost(@Param('id') postId: string): Promise<PostEntity> {
     return await this.postService.getSinglePost(postId);
   }
 

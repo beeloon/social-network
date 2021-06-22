@@ -3,7 +3,7 @@ import { Entity, Column, ObjectIdColumn, Unique } from 'typeorm';
 
 @Unique(['title'])
 @Entity({ name: 'posts' })
-export class PostSchema {
+export class Post {
   @ObjectIdColumn()
   id!: ObjectId;
 

@@ -15,7 +15,7 @@ import configuration from './config';
     ConfigModule.forRoot({ load: [configuration] }),
     DatabaseModule,
     UserModule,
-    //PostModule,
+    PostModule,
     AuthModule,
     FollowerModule,
   ],

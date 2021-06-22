@@ -6,8 +6,10 @@ import {
   HttpStatus,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JWTAuthGuard } from './guards/jwt-auth.guard';
@@ -15,14 +17,11 @@ import { JWTAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 
-import { RefreshTokenValueDto } from './dto/refresh-token-value.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
 import { TokenPair } from './interfaces/token-pair.interface';
 import { AccessToken } from './interfaces/access-token.interface';
-import { UserProfileInfo } from './interfaces/user-profile-info.interface';
-
-import { User } from 'src/database/entities';
+import { AuthenticatedUserInfo } from './interfaces/authenticated-user-info.interface';
 
 @Controller()
 export class AuthController {
@@ -31,35 +30,66 @@ export class AuthController {
     public userService: UserService,
   ) {}
 
+  private setCookie(res: Response, tokens: TokenPair): void {
+    res.cookie('refreshToken', tokens.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+  }
+
   @UseGuards(JWTAuthGuard)
   @Get('profile')
-  getProfile(@Req() req): UserProfileInfo {
+  getProfile(@Req() req): AuthenticatedUserInfo {
     return req.user;
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  login(@Req() req): Promise<TokenPair> {
-    return this.authService.login(req.user);
+  async login(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<TokenPair> {
+    const tokenPair = await this.authService.login(req.user);
+    this.setCookie(res, tokenPair);
+
+    return tokenPair;
   }
 
   @Post('auth/signup')
-  signup(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.create(createUserDto);
+  async signup(
+    @Body() createUserDto: CreateUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<TokenPair> {
+    const tokenPair = await this.authService.signup(createUserDto);
+    this.setCookie(res, tokenPair);
+
+    return tokenPair;
   }
 
   @UseGuards(JWTAuthGuard)
-  @Post('auth/refresh')
-  refresh(
+  @Get('auth/refresh')
+  async refresh(
     @Req() req,
-    @Body() body: RefreshTokenValueDto,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<TokenPair | AccessToken> {
-    return this.authService.refresh(req.user, body.refreshToken);
+    const { refreshToken } = req.cookies;
+    const refreshResult = await this.authService.refresh(refreshToken);
+    this.setCookie(res, refreshResult);
+
+    return refreshResult;
   }
 
   @UseGuards(JWTAuthGuard)
   @Delete('auth/logout')
-  logout(@Req() req): Promise<HttpStatus> {
-    return this.authService.logout(req.user.uid);
+  async logout(
+    @Req() req,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<HttpStatus> {
+    const { refreshToken } = req.cookies;
+    const deletedTokenStatus = await this.authService.logout(refreshToken);
+
+    res.clearCookie('refreshToken');
+
+    return deletedTokenStatus;
   }
 }

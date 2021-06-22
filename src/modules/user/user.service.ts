@@ -25,15 +25,15 @@ export class UserService {
       const user = await this.userRepository.create(createUser);
       user.password = await bcrypt.hash(user.password, 10);
       return await this.userRepository.save(user);
-    } catch (err) {
-      throw new ConflictException(err);
+    } catch (error) {
+      throw new ConflictException(error.message);
     }
   }
   public async findAll(): Promise<User[]> {
     try {
       return await this.userRepository.find();
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -41,7 +41,7 @@ export class UserService {
     try {
       return await this.userRepository.findOne({ where: { id } });
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -49,13 +49,13 @@ export class UserService {
     try {
       const user = await this.userRepository.findOne({ where: { email } });
 
-      if (user == null) {
+      if (!user) {
         throw new NotFoundException(`User with email: ${email} doesn't exist.`);
       }
 
       return user;
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -63,7 +63,7 @@ export class UserService {
     try {
       return await this.userRepository.delete(id);
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -74,7 +74,7 @@ export class UserService {
     try {
       return await this.userRepository.update(id, updateUserDto);
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 }

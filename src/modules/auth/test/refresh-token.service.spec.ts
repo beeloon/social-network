@@ -1,79 +1,74 @@
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { RefreshTokenService } from '../refresh-token.service';
+import { TokenService } from '../token.service';
 import { REPOSITORY } from '../../../database/database.constants';
 
-import {
-  mockToken,
-  mockUserId,
-  mockTokenValue,
-  mockRefreshTokenRepository,
-} from './mock/refresh-token.mock';
+export const mockToken = {
+  id: 'a2634196-dc1e-4ca8-9b45-131a5d8a83d9',
+  value: '399844eb-c773-4c59-a69f-3a4c7892f141',
+  user_id: '799ae53f-c924-4c87-a852-63ded876450d',
+};
 
-describe('RefreshTokenService', () => {
-  let tokenService: RefreshTokenService;
+const mockJwtServiceMock = {
+  sign: jest.fn().mockImplementation(() => true),
+  verify: jest.fn().mockImplementation(() => true),
+};
+
+const mockTokenRepository = {
+  save: jest.fn().mockImplementation(() => Promise.resolve(mockToken)),
+  findOne: jest.fn().mockImplementation((id) => Promise.resolve(mockToken)),
+  delete: jest.fn().mockImplementation((id) => Promise.resolve(true)),
+};
+
+describe('TokenService', () => {
+  let tokenService: TokenService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        RefreshTokenService,
+        TokenService,
         ConfigService,
-        {
-          provide: REPOSITORY.RefreshToken,
-          useValue: mockRefreshTokenRepository,
-        },
+        { provide: REPOSITORY.RefreshToken, useValue: mockTokenRepository },
       ],
     }).compile();
 
-    tokenService = module.get<RefreshTokenService>(RefreshTokenService);
+    tokenService = module.get<TokenService>(TokenService);
   });
 
-  describe('Create', () => {
-    it('When recieve correct user id, return token value that was generated with uuid', async () => {
-      expect(await tokenService.create(mockUserId)).toEqual(mockToken);
-    });
-  });
-
-  describe('Delete', () => {
-    it('When the user ID of the existing token comes, return true', async () => {
-      await expect(tokenService.delete(mockUserId)).toBeTruthy();
+  describe('Generate Tokens', () => {
+    it('', async () => {
+      return '';
     });
   });
 
-  describe('Generate', () => {
-    it('When the user ID of the existing token comes, return existing token value', async () => {
-      expect(await tokenService.generate(mockUserId)).toBe(mockTokenValue);
+  describe('Find', () => {
+    it('', async () => {
+      return '';
     });
   });
 
-  describe('Is expired', () => {
-    it('When token date is greather than current date, return false', async () => {
-      const tommorow = new Date();
-      tommorow.setDate(tommorow.getDate() + 1);
-      const futureTokenMock = { ...mockToken, expires: tommorow };
-
-      expect(tokenService.isExpired(futureTokenMock)).toBeFalsy();
-    });
-    it('When token date is equal to current date, return true', async () => {
-      expect(tokenService.isExpired(mockToken)).toBeTruthy();
-    });
-    it('When token date is less than current date, return true', async () => {
-      expect(tokenService.isExpired(mockToken)).toBeTruthy();
+  describe('Save', () => {
+    it('', async () => {
+      return '';
     });
   });
 
-  describe('Is valid', () => {
-    it('When the user ID of the existing token comes, return existing token value', async () => {
-      expect(tokenService.isValid(mockTokenValue, mockToken)).toBeTruthy();
+  describe('Update', () => {
+    it('', async () => {
+      return '';
     });
   });
 
-  describe('Verify', () => {
-    it('When the user ID from existing token and existing token value comes, return existing token', async () => {
-      expect(await tokenService.verify(mockUserId, mockTokenValue)).toBe(
-        mockToken,
-      );
+  describe('Remove', () => {
+    it('', async () => {
+      return '';
+    });
+  });
+
+  describe('Validate', () => {
+    it('', async () => {
+      return '';
     });
   });
 });

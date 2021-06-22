@@ -5,14 +5,14 @@ import { Entity, Column, ObjectIdColumn, Unique } from 'typeorm';
 @Entity({ name: 'posts' })
 export class Post {
   @ObjectIdColumn()
-  id: ObjectId;
+  id!: ObjectId;
 
   @Column()
-  title: string;
+  title!: string;
 
   @Column()
-  text: string;
+  text!: string;
 
   @Column()
-  ownerId: string;
+  ownerId!: string;
 }

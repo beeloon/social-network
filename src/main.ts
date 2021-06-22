@@ -10,7 +10,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(config.get('port'), ()=>{console.log('server started at', config.get('port'))});
+  await app.listen(config.get('port'));
 }
 
 bootstrap();

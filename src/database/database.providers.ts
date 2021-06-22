@@ -21,17 +21,17 @@ export const databaseProviders = [
         synchronize: true,
       }),
   },
-  // {
-  //   provide: DATABASE.Mongo,
-  //   inject: [ConfigService],
-  //   useFactory: async (configService: ConfigService) =>
-  //     await createConnection({
-  //       type: 'mongodb',
-  //       url: configService.get('mongo.connectionOptions.uri'),
-  //       useUnifiedTopology: true,
-  //       useNewUrlParser: true,
-  //       synchronize: true,
-  //       entities: [Post],
-  //     }),
-  // },
+  {
+    provide: DATABASE.Mongo,
+    inject: [ConfigService],
+    useFactory: async (configService: ConfigService) =>
+      await createConnection({
+        type: 'mongodb',
+        url: configService.get('mongo.connectionOptions.uri'),
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        synchronize: true,
+        entities: [Post],
+      }),
+  },
 ];

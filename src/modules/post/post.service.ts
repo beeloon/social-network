@@ -5,11 +5,13 @@ import { Repository, UpdateResult } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { REPOSITORY } from '../../database/database.constants';
 import { User } from '../../database/entities/user.entity';
+
 @Injectable()
 export class PostService {
   constructor(
     @Inject(REPOSITORY.Post)
     private postRepository: Repository<Post>,
+  ) {}
     @Inject(REPOSITORY.User)
     private userRepository: Repository<User>,
   ) {}
@@ -19,7 +21,6 @@ export class PostService {
     if (!owner) {
       throw new NotFoundException("User doesn't exist");
     }
-
     try {
       const post = await this.postRepository.save(dto);
       return post;

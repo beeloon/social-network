@@ -1,71 +1,82 @@
 import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../../user/user.service';
 import { AuthService } from '../auth.service';
-import { RefreshTokenService } from '../refresh-token.service';
+import { TokenService } from '../token.service';
 
-const regex = {
-  jwt: /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/,
-  refresh:
-    /[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/,
-};
-
-const userCredentials = {
+const mockUserCredentials = {
   email: 'test@mail.com',
   password: '12323434',
 };
 
-const userAuthInfo = {
-  id: 'fakeid',
+const mockUserPayload = {
+  id: '12345678',
   email: 'test@mail.com',
   username: 'bohdan',
 };
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let jwtService: JwtService;
-  let userService: UserService;
-  let refreshTokenService: RefreshTokenService;
 
   beforeEach(async () => {
-    authService = new AuthService(jwtService, userService, refreshTokenService);
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [UserService, TokenService],
+    }).compile();
+
+    authService = module.get<AuthService>(AuthService);
   });
 
-  describe('Issue token pair', () => {
-    it('When information about authenticated user correct, return generated pair of access and refresh tokens', async () => {
-      const result = {
-        token: expect.stringMatching(regex.jwt),
-        refreshToken: expect.stringMatching(regex.refresh),
-      };
+  describe('Generate Payload', () => {
+    it('When recieve user entity, return payload info', async () => {
+      return '';
+    });
+  });
 
-      jest
-        .spyOn(authService, 'issueTokenPair')
-        .mockImplementation(() => Promise.resolve(result));
+  describe('Issue Token Pair', () => {
+    it('When recieve user entiry or payload, return generated token pair', async () => {
+      return '';
+    });
+  });
 
-      expect(await authService.issueTokenPair(userAuthInfo)).toBe(result);
+  describe('Login', () => {
+    it('', async () => {
+      return '';
+    });
+  });
+
+  describe('Logout', () => {
+    it('When token in DB, return http status ok', async () => {
+      return '';
+    });
+
+    it(`When doesn't exist in DB, return http status no content`, async () => {
+      return '';
+    });
+  });
+
+  describe('Refresh', () => {
+    it('', async () => {
+      return '';
+    });
+  });
+
+  describe('Signup', () => {
+    it('', async () => {
+      return '';
     });
   });
 
   describe('Validate User', () => {
-    it('When recieve correct credentials, return information about authenticated user', async () => {
-      const { email, password } = userCredentials;
-
-      jest
-        .spyOn(authService, 'validateUser')
-        .mockImplementation(() => Promise.resolve(userAuthInfo));
-
-      expect(await authService.validateUser(email, password)).toEqual(
-        userAuthInfo,
-      );
+    it('When receive incorrect email, throw incorrect email authorization exception', async () => {
+      return '';
     });
 
-    it('When recieve incorrect credentials, return null', async () => {
-      const { email, password } = userCredentials;
+    it('When receive incorrect password, throw incorrect pass authorization exception', async () => {
+      return '';
+    });
 
-      jest
-        .spyOn(authService, 'validateUser')
-        .mockImplementation(() => Promise.resolve(null));
-
-      expect(await authService.validateUser(email, password)).toEqual(null);
+    it('When receive correct credentials, return user payload', async () => {
+      return '';
     });
   });
 });

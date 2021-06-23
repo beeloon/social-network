@@ -1,8 +1,6 @@
-import * as bcrypt from 'bcrypt';
 import {
   Entity,
   Column,
-  BeforeInsert,
   UpdateDateColumn,
   CreateDateColumn,
   Unique,
@@ -34,9 +32,4 @@ export class User {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', update: false })
   createdAt: Date;
-
-  @BeforeInsert()
-  async beforeInsertActions() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
 }

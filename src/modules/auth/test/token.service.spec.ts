@@ -37,37 +37,47 @@ describe('TokenService', () => {
   });
 
   describe('Generate Tokens', () => {
-    it('', async () => {
+    it('When receive correct user payload, return generated refresh and access tokens pair and save refresh token to DB', async () => {
       return '';
     });
   });
 
   describe('Find', () => {
-    it('', async () => {
+    it('When token exist in DB, return token', async () => {
+      return '';
+    });
+
+    it(`When token doesn't exist in DB, return undefined`, async () => {
       return '';
     });
   });
 
   describe('Save', () => {
-    it('', async () => {
+    it('When token already exist in DB, return this token', async () => {
       return '';
     });
-  });
 
-  describe('Update', () => {
-    it('', async () => {
+    it(`When token doesn't exist in DB, save token to DB and return saved token`, async () => {
       return '';
     });
   });
 
   describe('Remove', () => {
-    it('', async () => {
+    it('When amount of affected columns in DB after delete greather than 0, return true', async () => {
+      return '';
+    });
+
+    it('When amount of affected columns in DB after delete is 0, return false', async () => {
       return '';
     });
   });
 
   describe('Validate', () => {
-    it('', async () => {
+    it('When correct signature and valid secret, return user info payload', async () => {
+      return '';
+    });
+
+    it('When incorrect signature or invalid secret, return user unauthorized error', async () => {
       return '';
     });
   });

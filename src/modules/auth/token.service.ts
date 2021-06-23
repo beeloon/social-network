@@ -2,7 +2,6 @@ import {
   ConflictException,
   Inject,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -13,8 +12,8 @@ import { RefreshToken } from '../../database/entities';
 
 import { REPOSITORY } from '../../database/database.constants';
 
-import { TokenPair } from './interfaces/token-pair.interface';
-import { AuthenticatedUserInfo } from './interfaces/authenticated-user-info.interface';
+import { TokenField, TokenPair } from './auth.interface';
+import { UserPayload } from './auth.interface';
 
 @Injectable()
 export class TokenService {
@@ -25,7 +24,7 @@ export class TokenService {
     private configService: ConfigService,
   ) {}
 
-  async generateTokens(user: AuthenticatedUserInfo): Promise<TokenPair> {
+  async generateTokens(user: UserPayload): Promise<TokenPair> {
     const accessToken = this.jwtService.sign(user, {
       secret: this.configService.get('tokens.access.secret'),
       expiresIn: this.configService.get('tokens.access.expiresIn'),
@@ -44,37 +43,31 @@ export class TokenService {
     };
   }
 
-  async find(refreshToken: string): Promise<RefreshToken> {
+  async find(options: TokenField): Promise<RefreshToken> {
     try {
-      const token = await this.refreshTokenRepository.findOne({
-        value: refreshToken,
-      });
-
-      if (!token) {
-        throw new NotFoundException(`Refresh token not found.`);
-      }
-
-      return token;
-    } catch (error) {
-      throw new ConflictException(error.message);
+      return await this.refreshTokenRepository.findOne(options);
+    } catch (err) {
+      throw new ConflictException(err.message);
     }
   }
 
   async save(userId: string, refreshToken: string): Promise<RefreshToken> {
-    const tokenData = await this.refreshTokenRepository.findOne({
-      user_id: userId,
-    });
+    const tokenData = await this.find({ user_id: userId });
 
     if (tokenData) {
       return tokenData;
     }
 
-    const token = await this.refreshTokenRepository.save({
-      user_id: userId,
-      value: refreshToken,
-    });
+    try {
+      const token = await this.refreshTokenRepository.save({
+        user_id: userId,
+        value: refreshToken,
+      });
 
-    return token;
+      return token;
+    } catch (err) {
+      throw new ConflictException(err.message);
+    }
   }
 
   async remove(refreshToken: string): Promise<boolean> {
@@ -90,7 +83,7 @@ export class TokenService {
     }
   }
 
-  validate(token: string): AuthenticatedUserInfo {
+  validate(token: string): UserPayload {
     try {
       const refreshSecret = this.configService.get('tokens.refresh.secret');
       const userInfo = this.jwtService.verify(token, { secret: refreshSecret });

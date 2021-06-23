@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { UserService } from '../user/user.service';
@@ -8,8 +13,8 @@ import { TokenService } from './token.service';
 import { User } from 'src/database/entities';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
-import { TokenPair } from './interfaces/token-pair.interface';
-import { AuthenticatedUserInfo } from './interfaces/authenticated-user-info.interface';
+import { TokenPair } from './auth.interface';
+import { UserPayload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -18,45 +23,19 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  async issueTokenPair(
-    userInfo: AuthenticatedUserInfo | User,
-  ): Promise<TokenPair> {
-    const { id, email, username } = userInfo;
-    const payload = { id, email, username };
-    const tokens = this.tokenService.generateTokens(payload);
+  generatePayload({ id, username, email }): UserPayload {
+    return { id, username, email };
+  }
+
+  async issueTokenPair(user: UserPayload | User): Promise<TokenPair> {
+    const tokens = this.tokenService.generateTokens(this.generatePayload(user));
 
     return tokens;
   }
 
-  async signup(createUserDto: CreateUserDto): Promise<TokenPair> {
-    const user = await this.userService.create(createUserDto);
+  async login(user: UserPayload): Promise<TokenPair> {
     const tokenPair = await this.issueTokenPair(user);
 
-    return tokenPair;
-  }
-
-  async validateUser(
-    email: string,
-    pass: string,
-  ): Promise<AuthenticatedUserInfo> {
-    const user = await this.userService.findByEmail(email);
-    const isPasswordCorrect = await bcrypt.compare(pass, user.password);
-
-    if (!isPasswordCorrect) {
-      throw new UnauthorizedException('Incorrect password');
-    }
-
-    const authenticatedUserInfo = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-    };
-
-    return authenticatedUserInfo;
-  }
-
-  async login(user: AuthenticatedUserInfo): Promise<TokenPair> {
-    const tokenPair = await this.issueTokenPair(user);
     return tokenPair;
   }
 
@@ -71,14 +50,36 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<TokenPair> {
-    const dbToken = await this.tokenService.find(refreshToken);
-    const userPayload = this.tokenService.validate(dbToken.value);
+    const dbToken = await this.tokenService.find({ value: refreshToken });
+    if (!dbToken) {
+      throw new NotFoundException('Refresh token not found.');
+    }
 
-    const { id, username, email } = await this.userService.findById(
-      userPayload.id,
-    );
-    const tokenPair = await this.issueTokenPair({ id, username, email });
+    const tokenPayload = this.tokenService.validate(dbToken.value);
+    const user = await this.userService.findById(tokenPayload.id);
+    const tokenPair = await this.issueTokenPair(user);
 
-    return { ...tokenPair };
+    return tokenPair;
+  }
+
+  async signup(createUserDto: CreateUserDto): Promise<TokenPair> {
+    const user = await this.userService.create(createUserDto);
+    const tokenPair = await this.issueTokenPair(user);
+
+    return tokenPair;
+  }
+
+  async validateUser(email: string, pass: string): Promise<UserPayload> {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('Incorrect email.');
+    }
+
+    const isPassportValid = await bcrypt.compare(pass, user.password);
+    if (!isPassportValid) {
+      throw new UnauthorizedException('Incorrect password.');
+    }
+
+    return this.generatePayload(user);
   }
 }

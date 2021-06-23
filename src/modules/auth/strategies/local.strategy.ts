@@ -4,7 +4,7 @@ import { Strategy } from 'passport-local';
 
 import { AuthService } from '../auth.service';
 
-import { AuthenticatedUserInfo } from '../interfaces/authenticated-user-info.interface';
+import { UserPayload } from '../auth.interface';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -12,10 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email' });
   }
 
-  async validate(
-    username: string,
-    password: string,
-  ): Promise<AuthenticatedUserInfo> {
+  async validate(username: string, password: string): Promise<UserPayload> {
     const authenticatedUser = await this.authService.validateUser(
       username,
       password,

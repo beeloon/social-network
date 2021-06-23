@@ -19,9 +19,8 @@ import { UserService } from '../user/user.service';
 
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
-import { TokenPair } from './interfaces/token-pair.interface';
-import { AccessToken } from './interfaces/access-token.interface';
-import { AuthenticatedUserInfo } from './interfaces/authenticated-user-info.interface';
+import { TokenPair } from './auth.interface';
+import { UserPayload } from './auth.interface';
 
 @Controller()
 export class AuthController {
@@ -30,8 +29,8 @@ export class AuthController {
     public userService: UserService,
   ) {}
 
-  private setCookie(res: Response, tokens: TokenPair): void {
-    res.cookie('refreshToken', tokens.refreshToken, {
+  private setCookie(res: Response, refreshToken: string): void {
+    res.cookie('refreshToken', refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
@@ -39,7 +38,7 @@ export class AuthController {
 
   @UseGuards(JWTAuthGuard)
   @Get('profile')
-  getProfile(@Req() req): AuthenticatedUserInfo {
+  getProfile(@Req() req): UserPayload {
     return req.user;
   }
 
@@ -50,7 +49,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<TokenPair> {
     const tokenPair = await this.authService.login(req.user);
-    this.setCookie(res, tokenPair);
+    this.setCookie(res, tokenPair.refreshToken);
 
     return tokenPair;
   }
@@ -61,7 +60,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<TokenPair> {
     const tokenPair = await this.authService.signup(createUserDto);
-    this.setCookie(res, tokenPair);
+    this.setCookie(res, tokenPair.refreshToken);
 
     return tokenPair;
   }
@@ -71,12 +70,13 @@ export class AuthController {
   async refresh(
     @Req() req,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<TokenPair | AccessToken> {
+  ): Promise<TokenPair> {
     const { refreshToken } = req.cookies;
-    const refreshResult = await this.authService.refresh(refreshToken);
-    this.setCookie(res, refreshResult);
+    const tokenPair = await this.authService.refresh(refreshToken);
 
-    return refreshResult;
+    this.setCookie(res, tokenPair.refreshToken);
+
+    return tokenPair;
   }
 
   @UseGuards(JWTAuthGuard)

@@ -8,7 +8,7 @@ import { REPOSITORY } from 'src/database/database.constants';
 @Injectable()
 export class FollowerService {
   constructor(
-    @Inject(REPOSITORY.Follwer)
+    @Inject(REPOSITORY.Follower)
     private followersRepository: Repository<Follower>,
     @Inject(REPOSITORY.User)
     private usersRepository: Repository<User>,

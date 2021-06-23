@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { User } from 'src/database/entities';
 
-import { AuthenticatedUserInfo } from '../interfaces/authenticated-user-info.interface';
+import { UserPayload } from '../auth.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: User): Promise<AuthenticatedUserInfo> {
+  async validate(payload: User): Promise<UserPayload> {
     return {
       id: payload.id,
       username: payload.username,

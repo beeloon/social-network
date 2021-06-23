@@ -17,6 +17,7 @@ import { User } from 'src/database/entities';
 
 import { JWTAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+
 @UseGuards(JWTAuthGuard)
 @Controller('users')
 export class UserController {

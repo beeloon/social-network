@@ -6,10 +6,8 @@ import {
 } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
 import { User } from '../../database/entities';
 import { REPOSITORY } from '../../database/database.constants';
 

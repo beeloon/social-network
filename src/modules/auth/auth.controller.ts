@@ -15,7 +15,6 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JWTAuthGuard } from './guards/jwt-auth.guard';
 
 import { AuthService } from './auth.service';
-import { UserService } from '../user/user.service';
 
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
@@ -24,10 +23,7 @@ import { UserPayload } from './auth.interface';
 
 @Controller()
 export class AuthController {
-  constructor(
-    public authService: AuthService,
-    public userService: UserService,
-  ) {}
+  constructor(public authService: AuthService) {}
 
   private setCookie(res: Response, token: string): void {
     res.cookie('refreshToken', token, {

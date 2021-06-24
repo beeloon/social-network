@@ -53,7 +53,7 @@ export class AuthService {
       throw new NotFoundException('Refresh token not found.');
     }
 
-    const jwtPayload = this.tokenService.validate(dbToken.value);
+    const jwtPayload = await this.tokenService.validate(dbToken.value);
     const user = await this.userService.findById(jwtPayload.id);
     const tokenPair = await this.issueTokenPair(user);
 

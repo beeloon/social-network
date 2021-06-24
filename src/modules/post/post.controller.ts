@@ -29,19 +29,17 @@ export class PostController {
     @Body()
     postDto: CreatePostDto,
   ): Promise<PostEntity> {
-    const result = await this.postService.createPost(postDto);
-    return result;
+    return await this.postService.createPost(postDto);
   }
 
   @Get()
   async getAllPosts(): Promise<PostEntity[]> {
-    const posts = await this.postService.getAllPosts();
-    return posts;
+    return await this.postService.getAllPosts();
   }
 
   @Get(':id')
   async getSinglePost(@Param('id') postId: string): Promise<PostEntity> {
-    return this.postService.getSinglePost(postId);
+    return await this.postService.getSinglePost(postId);
   }
 
   @Patch(':id')

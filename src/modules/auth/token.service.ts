@@ -87,10 +87,12 @@ export class TokenService {
     }
   }
 
-  validate(token: string): JWTPayload {
+  async validate(token: string): Promise<JWTPayload> {
     try {
       const refreshSecret = this.configService.get('tokens.refresh.secret');
-      const userInfo = this.jwtService.verify(token, { secret: refreshSecret });
+      const userInfo = await this.jwtService.verifyAsync(token, {
+        secret: refreshSecret,
+      });
 
       return userInfo;
     } catch (error) {

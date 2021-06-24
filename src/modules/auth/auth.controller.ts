@@ -29,8 +29,8 @@ export class AuthController {
     public userService: UserService,
   ) {}
 
-  private setCookie(res: Response, refreshToken: string): void {
-    res.cookie('refreshToken', refreshToken, {
+  private setCookie(res: Response, token: string): void {
+    res.cookie('refreshToken', token, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });

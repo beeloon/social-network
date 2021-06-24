@@ -12,8 +12,12 @@ import { RefreshToken } from '../../database/entities';
 
 import { REPOSITORY } from '../../database/database.constants';
 
-import { TokenField, TokenPair } from './auth.interface';
-import { UserPayload } from './auth.interface';
+import {
+  TokenPair,
+  TokenField,
+  JWTPayload,
+  UserPayload,
+} from './auth.interface';
 
 @Injectable()
 export class TokenService {
@@ -24,18 +28,18 @@ export class TokenService {
     private configService: ConfigService,
   ) {}
 
-  async generateTokens(user: UserPayload): Promise<TokenPair> {
-    const accessToken = this.jwtService.sign(user, {
+  async generateTokens(payload: UserPayload): Promise<TokenPair> {
+    const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('tokens.access.secret'),
       expiresIn: this.configService.get('tokens.access.expiresIn'),
     });
 
-    const refresh = this.jwtService.sign(user, {
+    const refresh = this.jwtService.sign(payload, {
       secret: this.configService.get('tokens.refresh.secret'),
       expiresIn: this.configService.get('tokens.refresh.expiresIn'),
     });
 
-    const { value: refreshToken } = await this.save(user.id, refresh);
+    const { value: refreshToken } = await this.save(payload.id, refresh);
 
     return {
       accessToken,
@@ -83,14 +87,14 @@ export class TokenService {
     }
   }
 
-  validate(token: string): UserPayload {
+  validate(token: string): JWTPayload {
     try {
       const refreshSecret = this.configService.get('tokens.refresh.secret');
       const userInfo = this.jwtService.verify(token, { secret: refreshSecret });
 
       return userInfo;
     } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token signature');
+      throw new UnauthorizedException(error.message);
     }
   }
 }

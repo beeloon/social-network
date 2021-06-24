@@ -6,11 +6,9 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
+import { TokenService } from './token.service';
 import { UserService } from '../user/user.service';
 
-import { TokenService } from './token.service';
-
-import { User } from 'src/database/entities';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
 import { TokenPair } from './auth.interface';
@@ -23,12 +21,12 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  generatePayload({ id, username, email }): UserPayload {
-    return { id, username, email };
-  }
-
-  async issueTokenPair(user: UserPayload | User): Promise<TokenPair> {
-    const tokens = this.tokenService.generateTokens(this.generatePayload(user));
+  async issueTokenPair({
+    id,
+    email,
+    username,
+  }: UserPayload): Promise<TokenPair> {
+    const tokens = this.tokenService.generateTokens({ id, email, username });
 
     return tokens;
   }
@@ -55,8 +53,8 @@ export class AuthService {
       throw new NotFoundException('Refresh token not found.');
     }
 
-    const tokenPayload = this.tokenService.validate(dbToken.value);
-    const user = await this.userService.findById(tokenPayload.id);
+    const jwtPayload = this.tokenService.validate(dbToken.value);
+    const user = await this.userService.findById(jwtPayload.id);
     const tokenPair = await this.issueTokenPair(user);
 
     return tokenPair;
@@ -80,6 +78,11 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect password.');
     }
 
-    return this.generatePayload(user);
+    const userPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
+    return userPayload;
   }
 }

@@ -1,10 +1,11 @@
-export interface AccessToken {
-  token: string;
-}
-
 export interface TokenPair {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface TokenField {
+  user_id?: string;
+  value?: string;
 }
 
 export interface UserPayload {
@@ -13,7 +14,10 @@ export interface UserPayload {
   email: string;
 }
 
-export interface TokenField {
-  user_id?: string;
-  value?: string;
+export interface JWTPayload {
+  id: string;
+  username: string;
+  email: string;
+  iat: number;
+  exp: number;
 }

@@ -1,11 +1,14 @@
 interface Configuration {
   port: number;
-  token: {
-    secret: string;
-    expiresIn: string;
-  };
-  refresh: {
-    ttl: number;
+  tokens: {
+    access: {
+      secret: string;
+      expiresIn: string;
+    };
+    refresh: {
+      secret: string;
+      expiresIn: string;
+    };
   };
   mongo: {
     connectionOptions: {
@@ -33,12 +36,15 @@ const ENV: ProcessEnv = process.env;
 
 const configuration = (): Configuration => ({
   port: parseInt(ENV.PORT, 10) || 8080,
-  token: {
-    secret: ENV.JWT_ACCESS_TOKEN_SECRET,
-    expiresIn: ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
-  },
-  refresh: {
-    ttl: parseInt(ENV.REFRESH_TOKEN_TTL, 10),
+  tokens: {
+    access: {
+      secret: ENV.JWT_ACCESS_TOKEN_SECRET,
+      expiresIn: ENV.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+    },
+    refresh: {
+      secret: ENV.JWT_REFRESH_TOKEN_SECRET,
+      expiresIn: ENV.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+    },
   },
   mongo: {
     connectionOptions: {

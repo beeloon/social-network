@@ -11,7 +11,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../../database/entities';
 import { REPOSITORY } from '../../database/database.constants';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -24,15 +23,15 @@ export class UserService {
       const user = await this.userRepository.create(createUser);
       user.password = await bcrypt.hash(user.password, 10);
       return await this.userRepository.save(user);
-    } catch (err) {
-      throw new ConflictException(err);
+    } catch (error) {
+      throw new ConflictException(error.message);
     }
   }
   public async findAll(): Promise<User[]> {
     try {
       return await this.userRepository.find();
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -40,21 +39,15 @@ export class UserService {
     try {
       return await this.userRepository.findOne({ where: { id } });
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
   public async findByEmail(email: string): Promise<User> {
     try {
-      const user = await this.userRepository.findOne({ where: { email } });
-
-      if (user == null) {
-        throw new NotFoundException(`User with email: ${email} doesn't exist.`);
-      }
-
-      return user;
+      return await this.userRepository.findOne({ where: { email } });
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -62,7 +55,7 @@ export class UserService {
     try {
       return await this.userRepository.delete(id);
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 
@@ -73,7 +66,7 @@ export class UserService {
     try {
       return await this.userRepository.update(id, updateUserDto);
     } catch (error) {
-      console.log(error);
+      throw new ConflictException(error.message);
     }
   }
 }

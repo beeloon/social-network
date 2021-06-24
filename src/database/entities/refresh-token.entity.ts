@@ -16,13 +16,7 @@ export class RefreshToken {
   @Column()
   value: string;
 
-  @Column()
-  hash: string;
-
   @OneToOne(() => User, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user_id: string;
-
-  @Column()
-  expires: Date;
 }

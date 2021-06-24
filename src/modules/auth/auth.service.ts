@@ -1,87 +1,88 @@
-import { JwtService } from '@nestjs/jwt';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
+import { TokenService } from './token.service';
 import { UserService } from '../user/user.service';
-import { RefreshTokenService } from './refresh-token.service';
 
-import { TokenPair } from './interfaces/token-pair.interface';
-import { AccessToken } from './interfaces/access-token.interface';
-import { AuthenticatedUserInfo } from './interfaces/authenticated-user-info.interface';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+
+import { TokenPair } from './auth.interface';
+import { UserPayload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
     private userService: UserService,
-    private refreshTokenService: RefreshTokenService,
+    private tokenService: TokenService,
   ) {}
 
-  async issueTokenPair(user: AuthenticatedUserInfo): Promise<TokenPair> {
-    const payload = { username: user.username, id: user.id };
+  async issueTokenPair({
+    id,
+    email,
+    username,
+  }: UserPayload): Promise<TokenPair> {
+    const tokens = this.tokenService.generateTokens({ id, email, username });
 
-    const token = this.jwtService.sign(payload);
-    const refreshToken = await this.refreshTokenService.generate(payload.id);
-
-    return {
-      token,
-      refreshToken,
-      tokenType: 'Bearer',
-    };
+    return tokens;
   }
 
-  async validateUser(
-    email: string,
-    pass: string,
-  ): Promise<AuthenticatedUserInfo | null> {
-    const user = await this.userService.findByEmail(email);
-
-    if (user && bcrypt.compare(pass, user.password)) {
-      const { id, username, email } = user;
-      const authenticatedUserInfo = { id, username, email };
-
-      return authenticatedUserInfo;
-    }
-
-    return null;
-  }
-
-  async login(user: AuthenticatedUserInfo): Promise<TokenPair> {
+  async login(user: UserPayload): Promise<TokenPair> {
     const tokenPair = await this.issueTokenPair(user);
 
     return tokenPair;
   }
 
-  async logout(userId: string): Promise<HttpStatus> {
-    const { affected: isTokensDeleted } = await this.refreshTokenService.delete(
-      userId,
-    );
+  async logout(refreshToken: string): Promise<HttpStatus> {
+    const isTokenDeleted = await this.tokenService.remove(refreshToken);
 
-    if (isTokensDeleted) {
+    if (isTokenDeleted) {
       return HttpStatus.OK;
     }
 
     return HttpStatus.NO_CONTENT;
   }
 
-  async refresh(
-    userInfo: AuthenticatedUserInfo,
-    token: string,
-  ): Promise<TokenPair | AccessToken> {
-    const dbToken = await this.refreshTokenService.verify(userInfo.id, token);
-
-    if (this.refreshTokenService.isExpired(dbToken)) {
-      await this.refreshTokenService.delete(userInfo.id);
-      const tokenPair = await this.issueTokenPair(userInfo);
-
-      return tokenPair;
+  async refresh(refreshToken: string): Promise<TokenPair> {
+    const dbToken = await this.tokenService.find({ value: refreshToken });
+    if (!dbToken) {
+      throw new NotFoundException('Refresh token not found.');
     }
 
-    return {
-      token: this.jwtService.sign({
-        username: userInfo.username,
-        id: userInfo.id,
-      }),
+    const jwtPayload = await this.tokenService.validate(dbToken.value);
+    const user = await this.userService.findById(jwtPayload.id);
+    const tokenPair = await this.issueTokenPair(user);
+
+    return tokenPair;
+  }
+
+  async signup(createUserDto: CreateUserDto): Promise<TokenPair> {
+    const user = await this.userService.create(createUserDto);
+    const tokenPair = await this.issueTokenPair(user);
+
+    return tokenPair;
+  }
+
+  async validateUser(email: string, pass: string): Promise<UserPayload> {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('Incorrect email.');
+    }
+
+    const isPassportValid = await bcrypt.compare(pass, user.password);
+    if (!isPassportValid) {
+      throw new UnauthorizedException('Incorrect password.');
+    }
+
+    const userPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
     };
+    return userPayload;
   }
 }

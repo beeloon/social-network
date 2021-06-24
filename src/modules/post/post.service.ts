@@ -11,7 +11,6 @@ export class PostService {
   constructor(
     @Inject(REPOSITORY.Post)
     private postRepository: Repository<Post>,
-  ) {}
     @Inject(REPOSITORY.User)
     private userRepository: Repository<User>,
   ) {}

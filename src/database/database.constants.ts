@@ -6,6 +6,6 @@ export enum DATABASE {
 export enum REPOSITORY {
   User = 'User',
   Post = 'Post',
-  Follwer = 'Follwer',
+  Follower = 'Follower',
   RefreshToken = 'RefreshToken',
 }

@@ -6,7 +6,7 @@ import { REPOSITORY, DATABASE } from '../database.constants';
 
 export const followerProvider = [
   {
-    provide: REPOSITORY.Follwer,
+    provide: REPOSITORY.Follower,
     useFactory: (connection: Connection) => connection.getRepository(Follower),
     inject: [DATABASE.Sql],
   },

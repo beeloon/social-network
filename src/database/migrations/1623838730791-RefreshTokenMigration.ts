@@ -2,8 +2,6 @@ import {
   MigrationInterface,
   QueryRunner,
   Table,
-  TableIndex,
-  TableColumn,
   TableForeignKey,
 } from 'typeorm';
 
@@ -24,15 +22,6 @@ export class RefreshTokenMigration1623838730791 implements MigrationInterface {
             name: 'value',
             type: 'varchar',
             width: 255,
-          },
-          {
-            name: 'hash',
-            type: 'varchar',
-            isUnique: true,
-          },
-          {
-            name: 'expires',
-            type: 'datetime',
           },
           {
             name: 'user_id',

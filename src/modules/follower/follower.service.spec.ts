@@ -41,7 +41,7 @@ describe('FollowerService', () => {
       providers: [
         FollowerService,
         {
-          provide: REPOSITORY.Follwer,
+          provide: REPOSITORY.Follower,
           useValue: mockFollowerRepository,
         },
         {

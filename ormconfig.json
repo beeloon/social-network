@@ -6,16 +6,10 @@
   "password": "password",
   "database": "user_system",
   "synchronize": true,
-  "entities": [
-    "src/database/entities/user-entity.ts",
-    "src/database/entities/refresh-token-entity.ts"
-  ],
+  "entities": ["src/database/entities"],
   "migrations": ["src/database/migrations/*.ts"],
   "cli": {
-    "entitiesDir": [
-      "src/database/entities/user-entity.ts",
-      "src/database/entities/refresh-token-entity.ts"
-    ],
+    "entitiesDir": ["src/database/entities/*.ts"],
     "migrationsDir": "src/database/migrations"
   }
 }

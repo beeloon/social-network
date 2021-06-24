@@ -1,6 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '../user/user.service';
-
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
 describe('PostController', () => {
@@ -34,7 +32,7 @@ describe('PostController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostController],
-      providers: [PostService, UserService],
+      providers: [PostService],
     })
       .overrideProvider(PostService)
       .useValue(mockPostService)

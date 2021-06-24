@@ -26,15 +26,6 @@ export class RefreshTokenMigration1623838730791 implements MigrationInterface {
             width: 255,
           },
           {
-            name: 'hash',
-            type: 'varchar',
-            isUnique: true,
-          },
-          {
-            name: 'expires',
-            type: 'datetime',
-          },
-          {
             name: 'user_id',
             type: 'varchar',
             width: 36,

@@ -2,10 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { PostService } from './post.service';
 import { REPOSITORY } from '../../database/database.constants';
-import { UserService } from '../user/user.service';
 describe('PostService', () => {
   let service: PostService;
-  //let userService: UserService;
 
   const mockPostRepository = {
     find: jest.fn().mockImplementation(() => {
@@ -46,6 +44,7 @@ describe('PostService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        PostService,
         {
           provide: REPOSITORY.Post,
           useValue: mockPostRepository,
@@ -58,7 +57,6 @@ describe('PostService', () => {
     }).compile();
 
     service = module.get<PostService>(PostService);
-    // userService = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {

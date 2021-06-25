@@ -28,6 +28,7 @@ describe('UserService', () => {
         email: 'email',
         ...dto,
       });
+
     }),
   };
 
@@ -93,3 +94,4 @@ describe('UserService', () => {
     });
   });
 });
+

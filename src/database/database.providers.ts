@@ -20,7 +20,6 @@ export const databaseProviders = [
         entities: [User, Follower, RefreshToken],
       }),
   },
-
   {
     provide: DATABASE.Mongo,
     inject: [ConfigService],

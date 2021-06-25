@@ -1,10 +1,11 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { AuthenticatedUserInfo } from '../interfaces/authenticated-user-info.interface';
-import { UserProfileInfo } from '../interfaces/user-profile-info.interface';
+import { User } from 'src/database/entities';
+
+import { UserPayload } from '../auth.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -12,11 +13,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('token.secret'),
+      secretOrKey: configService.get<string>('tokens.access.secret'),
     });
   }
 
-  async validate(payload: AuthenticatedUserInfo): Promise<UserProfileInfo> {
-    return { id: payload.id, username: payload.username };
+  async validate(payload: User): Promise<UserPayload> {
+    return {
+      id: payload.id,
+      username: payload.username,
+      email: payload.email,
+    };
   }
 }

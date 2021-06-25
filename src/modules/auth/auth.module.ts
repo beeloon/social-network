@@ -4,8 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AuthService } from './auth.service';
+import { TokenService } from './token.service';
 import { UserService } from '../user/user.service';
-import { RefreshTokenService } from './refresh-token.service';
 
 import { AuthController } from './auth.controller';
 
@@ -25,9 +25,9 @@ import { refreshTokenProvider, userProvider } from 'src/database/providers';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('token.secret'),
+        secret: configService.get('tokens.access.secret'),
         signOptions: {
-          expiresIn: configService.get<number>('token.expiresIn'),
+          expiresIn: configService.get('tokens.access.expiresIn'),
         },
       }),
       inject: [ConfigService],
@@ -38,7 +38,7 @@ import { refreshTokenProvider, userProvider } from 'src/database/providers';
     AuthService,
     UserService,
     ConfigService,
-    RefreshTokenService,
+    TokenService,
     JwtStrategy,
     LocalStrategy,
     ...userProvider,

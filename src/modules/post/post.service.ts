@@ -5,6 +5,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { REPOSITORY } from '../../database/database.constants';
 import { User } from '../../database/entities/user.entity';
+
 @Injectable()
 export class PostService {
   constructor(

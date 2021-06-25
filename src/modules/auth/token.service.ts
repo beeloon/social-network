@@ -34,17 +34,14 @@ export class TokenService {
       expiresIn: this.configService.get('tokens.access.expiresIn'),
     });
 
-    const refresh = this.jwtService.sign(payload, {
+    const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('tokens.refresh.secret'),
       expiresIn: this.configService.get('tokens.refresh.expiresIn'),
     });
 
-    const { value: refreshToken } = await this.save(payload.id, refresh);
+    await this.save(payload.id, refreshToken);
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+    return { accessToken, refreshToken };
   }
 
   async find(options: TokenField): Promise<RefreshToken> {

@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { UnauthorizedException } from '@nestjs/common';
 
 import { TokenService } from '../token.service';
+
 import { REPOSITORY } from '../../../database/database.constants';
-import { UnauthorizedException } from '@nestjs/common';
 
 import {
   mockJwtService,
@@ -29,12 +30,10 @@ describe('TokenService', () => {
 
   describe('Generate Tokens', () => {
     it('When receive correct user payload, return generated refresh and access tokens pair and save refresh token to DB', async () => {
-      const res = await tokenService.generateTokens({
-        id: '1',
-        username: 'test',
-        email: 'test@mail.com',
-      });
-      expect(res).toEqual({
+      const mockPayload = { id: '1', username: 'test', email: 'test@mail.com' };
+      const generationResult = await tokenService.generateTokens(mockPayload);
+
+      expect(generationResult).toEqual({
         accessToken: 'fakejwttoken',
         refreshToken: 'fakejwttoken',
       });
@@ -43,11 +42,9 @@ describe('TokenService', () => {
 
   describe('Find', () => {
     it('When token exist in DB, return DB token', async () => {
-      const existedToken = { id: 1, user_id: 'user1', value: 'token1' };
+      const dbToken = { id: 1, user_id: 'user1', value: 'token1' };
 
-      expect(await tokenService.find({ user_id: 'user1' })).toEqual(
-        existedToken,
-      );
+      expect(await tokenService.find({ user_id: 'user1' })).toEqual(dbToken);
     });
 
     it(`When token doesn't exist in DB, return undefined`, async () => {
@@ -57,9 +54,9 @@ describe('TokenService', () => {
 
   describe('Save', () => {
     it('When token already exist in DB, return DB token', async () => {
-      const existedToken = { id: 1, user_id: 'user1', value: 'token1' };
+      const dbToken = { id: 1, user_id: 'user1', value: 'token1' };
 
-      expect(await tokenService.save('user1', '_')).toEqual(existedToken);
+      expect(await tokenService.save('user1', '_')).toEqual(dbToken);
     });
 
     it(`When token doesn't exist in DB, save token to DB and return saved token`, async () => {

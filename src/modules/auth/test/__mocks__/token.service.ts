@@ -1,6 +1,6 @@
 export const mockUserPayload = {
-  id: 1,
-  uid: 'user1',
+  id: 'user1',
+  username: 'testuser',
   email: 'test@mail.com',
   iat: 111,
   exp: 112,

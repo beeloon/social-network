@@ -55,8 +55,11 @@ export class AuthService {
 
     const jwtPayload = await this.tokenService.validate(dbToken.value);
     const user = await this.userService.findById(jwtPayload.id);
-    const tokenPair = await this.issueTokenPair(user);
+    if (!user) {
+      throw new NotFoundException(`User with id: ${jwtPayload.id} not found.`);
+    }
 
+    const tokenPair = await this.issueTokenPair(user);
     return tokenPair;
   }
 

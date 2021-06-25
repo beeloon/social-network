@@ -22,10 +22,9 @@ describe('PostService', () => {
     }),
     update: jest.fn().mockImplementation((id, dto) => {
       return Promise.resolve({
-        id,
+        id: id.id,
         title: 'email',
         text: 'username',
-        ownerId: 'ownerId',
         ...dto,
       });
     }),
@@ -79,10 +78,7 @@ describe('PostService', () => {
 
   it('should delete a post', async () => {
     const id = 'id';
-    expect(await service.deletePost(id)).toEqual({
-      id,
-      result: 'deleted',
-    });
+    expect(await service.deletePost(id)).toEqual(id);
   });
 
   it('should update a post', async () => {

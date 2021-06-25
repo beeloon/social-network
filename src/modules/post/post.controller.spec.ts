@@ -16,16 +16,16 @@ describe('PostController', () => {
         ownerId: 'ownerId',
       });
     }),
-    delete: jest.fn().mockImplementation((id) => {
-      return Promise.resolve({ result: 'deleted', id });
+    deletePost: jest.fn().mockImplementation((id) => {
+      return { id, result: 'deleted' };
     }),
-    updatePostById: jest.fn().mockImplementation((id, dto) => {
-      return Promise.resolve({
+    updatePost: jest.fn().mockImplementation((id, dto) => {
+      return {
         title: 'title',
         text: 'text',
         id,
         ...dto,
-      });
+      };
     }),
   };
 
@@ -72,7 +72,7 @@ describe('PostController', () => {
       result: expect.any(String),
     });
 
-    expect(mockPostService.delete).toHaveBeenCalledWith(id);
+    expect(mockPostService.deletePost).toHaveBeenCalledWith(id);
   });
 
   it('should update a post', async () => {
@@ -88,6 +88,6 @@ describe('PostController', () => {
       text: expect.any(String),
     });
 
-    expect(mockPostService.updatePostById).toHaveBeenCalledWith(id, dto);
+    expect(mockPostService.updatePost).toHaveBeenCalledWith(id, dto);
   });
 });

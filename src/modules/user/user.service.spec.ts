@@ -8,16 +8,27 @@ describe('UserService', () => {
 
   const mockUserRepository = {
     find: jest.fn().mockImplementation(() => {
-      return Promise.resolve(['user1','user2']);
+      return Promise.resolve(['user1', 'user2']);
     }),
-    findOne: jest.fn().mockImplementation((params)=>{
-      return Promise.resolve({id:'id', email:'email',username: 'username',...params.where})
+    findOne: jest.fn().mockImplementation((params) => {
+      return Promise.resolve({
+        id: 'id',
+        email: 'email',
+        username: 'username',
+        ...params.where,
+      });
     }),
     delete: jest.fn().mockImplementation((id) => {
-      return Promise.resolve({result: 'deleted', id});
+      return Promise.resolve({ result: 'deleted', id });
     }),
     update: jest.fn().mockImplementation((id, dto) => {
-      return Promise.resolve({id, username: 'username', email: 'email', ...dto});
+      return Promise.resolve({
+        id,
+        username: 'username',
+        email: 'email',
+        ...dto,
+      });
+
     }),
   };
 
@@ -48,7 +59,7 @@ describe('UserService', () => {
     expect(await service.findByEmail(email)).toEqual({
       id: expect.any(String),
       email,
-      username: expect.any(String)
+      username: expect.any(String),
     });
   });
 
@@ -57,15 +68,15 @@ describe('UserService', () => {
     expect(await service.findById(id)).toEqual({
       id,
       email: expect.any(String),
-      username: expect.any(String)
+      username: expect.any(String),
     });
   });
 
   it('should delete a user', async () => {
-    const id = 'id'
+    const id = 'id';
     expect(await service.delete(id)).toEqual({
       id,
-      result: 'deleted'
+      result: 'deleted',
     });
   });
 
@@ -75,11 +86,12 @@ describe('UserService', () => {
       username: 'username',
       email: 'email',
     };
-    expect(await service.update(id,dto)).toEqual({
+    expect(await service.update(id, dto)).toEqual({
       id: expect.any(String),
       username: 'username',
       email: 'email',
-      ...dto
+      ...dto,
     });
   });
 });
+

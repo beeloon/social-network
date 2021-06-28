@@ -39,7 +39,7 @@ export class PostService {
 
   public async getSinglePost(postId: string): Promise<Post> {
     try {
-      const post = await this.postRepository.findOneOrFail(postId);
+      const post = await this.postRepository.findOne(postId);
       if (!post) {
         throw new Error();
       }
@@ -52,7 +52,7 @@ export class PostService {
     id: string,
     updatePostDto: UpdatePostDto,
   ): Promise<UpdateResult> {
-    const findPostForUpdate = await this.postRepository.findOneOrFail(id);
+    const findPostForUpdate = await this.postRepository.findOne(id);
     if (!findPostForUpdate) {
       throw new NotFoundException(`Post with id: ${id} doesn't exists`);
     }
@@ -61,7 +61,7 @@ export class PostService {
 
   public async deletePost(id: string): Promise<string> {
     try {
-      const findPostForDelete = await this.postRepository.findOneOrFail(id);
+      const findPostForDelete = await this.postRepository.findOne(id);
       if (!findPostForDelete) {
         throw new NotFoundException(`Post with id: ${id} doesn't exists`);
       }

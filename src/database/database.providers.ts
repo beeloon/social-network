@@ -18,7 +18,6 @@ export const databaseProviders = [
         password: configService.get('sql.connectionOptions.password'),
         database: configService.get('sql.connectionOptions.database'),
         entities: [User, Follower, RefreshToken],
-        synchronize: true,
       }),
   },
   {

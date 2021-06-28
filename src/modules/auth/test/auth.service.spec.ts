@@ -1,82 +1,62 @@
-import { JwtService } from '@nestjs/jwt';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from '../../user/user.service';
+
 import { AuthService } from '../auth.service';
-import { TokenService } from '../token.service';
 
-const mockUserCredentials = {
-  email: 'test@mail.com',
-  password: '12323434',
-};
+import { mockTokenService, mockUserService } from './__mocks__/auth.service';
 
-const mockUserPayload = {
-  id: '12345678',
-  email: 'test@mail.com',
-  username: 'bohdan',
-};
-
-describe('AuthService', () => {
+describe('TokenService', () => {
   let authService: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService, TokenService],
+      providers: [
+        AuthService,
+        { provide: 'TokenService', useValue: mockTokenService },
+        { provide: 'UserService', useValue: mockUserService },
+      ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
   });
 
-  describe('Generate Payload', () => {
-    it('When recieve user entity, return payload info', async () => {
-      return '';
-    });
-  });
-
-  describe('Issue Token Pair', () => {
-    it('When recieve user entiry or payload, return generated token pair', async () => {
-      return '';
-    });
-  });
-
-  describe('Login', () => {
-    it('', async () => {
-      return '';
-    });
-  });
-
-  describe('Logout', () => {
-    it('When token in DB, return http status ok', async () => {
-      return '';
-    });
-
-    it(`When doesn't exist in DB, return http status no content`, async () => {
-      return '';
-    });
-  });
-
   describe('Refresh', () => {
-    it('', async () => {
-      return '';
+    it("When token doesn't exist in DB, throw not found exception", async () => {
+      try {
+        await authService.refresh('token2');
+      } catch (err) {
+        expect(err).toEqual(new NotFoundException('Refresh token not found.'));
+      }
     });
-  });
 
-  describe('Signup', () => {
-    it('', async () => {
-      return '';
+    it(`When token exist in DB, but user doesn't, throw not found user exception`, async () => {
+      try {
+        await authService.refresh('token1');
+      } catch (err) {
+        expect(err).toEqual(
+          new NotFoundException(`User with id: user1 not found.`),
+        );
+      }
+    });
+
+    it('When token and user exist in DB, retun token pair', async () => {
+      try {
+        await authService.refresh('token1');
+      } catch (err) {
+        expect(err).toEqual(
+          new NotFoundException('User with id: user1 not found.'),
+        );
+      }
     });
   });
 
   describe('Validate User', () => {
-    it('When receive incorrect email, throw incorrect email authorization exception', async () => {
-      return '';
-    });
-
-    it('When receive incorrect password, throw incorrect pass authorization exception', async () => {
-      return '';
-    });
-
-    it('When receive correct credentials, return user payload', async () => {
-      return '';
+    it('When user pass incorrect password, throw invalid pass unauthorized error', async () => {
+      try {
+        await authService.validateUser('t@mail.com', '___');
+      } catch (err) {
+        expect(err).toEqual(new UnauthorizedException('Incorrect password.'));
+      }
     });
   });
 });

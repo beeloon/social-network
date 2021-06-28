@@ -1,25 +1,16 @@
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UnauthorizedException } from '@nestjs/common';
 
 import { TokenService } from '../token.service';
+
 import { REPOSITORY } from '../../../database/database.constants';
 
-export const mockToken = {
-  id: 'a2634196-dc1e-4ca8-9b45-131a5d8a83d9',
-  value: '399844eb-c773-4c59-a69f-3a4c7892f141',
-  user_id: '799ae53f-c924-4c87-a852-63ded876450d',
-};
-
-const mockJwtServiceMock = {
-  sign: jest.fn().mockImplementation(() => true),
-  verify: jest.fn().mockImplementation(() => true),
-};
-
-const mockTokenRepository = {
-  save: jest.fn().mockImplementation(() => Promise.resolve(mockToken)),
-  findOne: jest.fn().mockImplementation((id) => Promise.resolve(mockToken)),
-  delete: jest.fn().mockImplementation((id) => Promise.resolve(true)),
-};
+import {
+  mockJwtService,
+  mockConfigService,
+  mockTokenRepository,
+  mockUserPayload,
+} from './__mocks__/token.service';
 
 describe('TokenService', () => {
   let tokenService: TokenService;
@@ -28,7 +19,8 @@ describe('TokenService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TokenService,
-        ConfigService,
+        { provide: 'JwtService', useValue: mockJwtService },
+        { provide: 'ConfigService', useValue: mockConfigService },
         { provide: REPOSITORY.RefreshToken, useValue: mockTokenRepository },
       ],
     }).compile();
@@ -38,47 +30,63 @@ describe('TokenService', () => {
 
   describe('Generate Tokens', () => {
     it('When receive correct user payload, return generated refresh and access tokens pair and save refresh token to DB', async () => {
-      return '';
+      const mockPayload = { id: '1', username: 'test', email: 'test@mail.com' };
+      const generationResult = await tokenService.generateTokens(mockPayload);
+
+      expect(generationResult).toEqual({
+        accessToken: 'fakejwttoken',
+        refreshToken: 'fakejwttoken',
+      });
     });
   });
 
   describe('Find', () => {
-    it('When token exist in DB, return token', async () => {
-      return '';
+    it('When token exist in DB, return DB token', async () => {
+      const dbToken = { id: 1, user_id: 'user1', value: 'token1' };
+
+      expect(await tokenService.find({ user_id: 'user1' })).toEqual(dbToken);
     });
 
     it(`When token doesn't exist in DB, return undefined`, async () => {
-      return '';
+      expect(await tokenService.find({ user_id: 'user2' })).toEqual(undefined);
     });
   });
 
   describe('Save', () => {
-    it('When token already exist in DB, return this token', async () => {
-      return '';
+    it('When token already exist in DB, return DB token', async () => {
+      const dbToken = { id: 1, user_id: 'user1', value: 'token1' };
+
+      expect(await tokenService.save('user1', '_')).toEqual(dbToken);
     });
 
     it(`When token doesn't exist in DB, save token to DB and return saved token`, async () => {
-      return '';
+      const newToken = { id: 2, user_id: 'user2', value: 'token2' };
+
+      expect(await tokenService.save('user2', 'token2')).toEqual(newToken);
     });
   });
 
   describe('Remove', () => {
     it('When amount of affected columns in DB after delete greather than 0, return true', async () => {
-      return '';
+      expect(await tokenService.remove('exist')).toBeTruthy();
     });
 
     it('When amount of affected columns in DB after delete is 0, return false', async () => {
-      return '';
+      expect(await tokenService.remove('nonexistent')).toBeFalsy();
     });
   });
 
   describe('Validate', () => {
     it('When correct signature and valid secret, return user info payload', async () => {
-      return '';
+      expect(await tokenService.validate('valid')).toEqual(mockUserPayload);
     });
 
     it('When incorrect signature or invalid secret, return user unauthorized error', async () => {
-      return '';
+      try {
+        await tokenService.validate('nonvalid');
+      } catch (err) {
+        expect(err).toEqual(new UnauthorizedException(err.message));
+      }
     });
   });
 });

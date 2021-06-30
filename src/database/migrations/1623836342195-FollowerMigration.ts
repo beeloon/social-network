@@ -14,7 +14,7 @@ export class FollowerMigration1623836342195 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'varchar',
+            type: 'int',
             width: 36,
             isPrimary: true,
           },
